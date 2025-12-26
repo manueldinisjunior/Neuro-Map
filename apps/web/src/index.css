@@ -1,34 +1,15 @@
-:root {
-  --color-primary: #e63946; /* Red */
-  --color-secondary: #48cae4; /* Sky Blue */
-  --color-bg: #ffffff; /* White */
-  --color-text: #1d3557; /* Dark Blue/Charcoal for text contrast */
-  --font-main: 'Poppins', sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+html,
 body {
-  font-family: var(--font-main);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  overflow: hidden; /* Prevent scroll on 3D canvas page */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', sans-serif;
+  height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  outline: none;
+#root {
+  height: 100%;
 }
