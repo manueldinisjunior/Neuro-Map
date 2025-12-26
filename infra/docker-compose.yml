@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16
+    container_name: neuro_notes_db
+    environment:
+      POSTGRES_USER: neuro
+      POSTGRES_PASSWORD: neuro_pw
+      POSTGRES_DB: neuro_notes
+    ports:
+      - "5432:5432"
+    volumes:
+      - neuro_db_data:/var/lib/postgresql/data
+volumes:
+  neuro_db_data:
