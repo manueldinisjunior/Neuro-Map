@@ -29,7 +29,11 @@ export function DashboardLayout() {
                         </button>
                         <div className="h-6 w-px bg-slate-200 mx-2" />
 
-                        <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                        <button
+                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors"
+                            aria-label="Settings"
+                            title="Settings"
+                        >
                             <Settings size={20} />
                         </button>
                         <button
