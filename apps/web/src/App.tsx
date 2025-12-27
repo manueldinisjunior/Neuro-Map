@@ -6,6 +6,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
+import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 
@@ -21,6 +22,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
         </Route>
+
+        {/* Onboarding */}
+        <Route path="/onboarding" element={<Onboarding />} />
 
         {/* Protected Routes (Mock protection for now) */}
         <Route path="/dashboard" element={<DashboardLayout />}>

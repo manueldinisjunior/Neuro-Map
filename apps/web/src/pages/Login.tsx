@@ -19,7 +19,7 @@ export default function Login() {
             // In a real app, this would be a secure token
             localStorage.setItem('neuro_token', 'mock_token_123');
             setLoading(false);
-            navigate('/dashboard');
+            navigate('/onboarding');
         }, 1000);
     };
 

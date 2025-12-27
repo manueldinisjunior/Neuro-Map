@@ -61,7 +61,7 @@ export function PublicLayout() {
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2" aria-label="Neuro Notes Logo" role="img">
                                 <BrainCircuit size={24} className="text-blue-500" />
                                 <span className="font-bold text-xl text-slate-100">Neuro Notes</span>
                             </div>
