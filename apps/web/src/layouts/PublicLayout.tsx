@@ -10,35 +10,45 @@ export function PublicLayout() {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-blue-500/30">
-            <header className="sticky top-0 z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-zinc-900/50">
-                <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="min-h-screen font-sans selection:bg-blue-500/30 bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-400">
+            <header className="sticky top-0 z-50 backdrop-blur-xl border-b bg-[var(--bg-primary)]/95 border-[var(--border-color)]">
+                <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-8">
+                    {/* Logo - Left */}
                     <Logo />
 
-                    <nav className="hidden md:flex items-center gap-10">
-                        <Link to="/" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-blue-500 transition-colors">
+                    {/* Navigation - Center Left */}
+                    <nav className="hidden lg:flex items-center gap-8">
+                        <Link to="/" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
                             {t('nav.home')}
                         </Link>
-                        <Link to="/about" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-blue-500 transition-colors">
+                        <Link to="/about" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
                             {t('nav.about')}
                         </Link>
-                        <Link to="/services" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-blue-500 transition-colors">
+                        <Link to="/services" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
                             {t('nav.services')}
                         </Link>
-                        <Link to="/contact" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-blue-500 transition-colors">
+                        <Link to="/contact" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
                             {t('nav.contact')}
                         </Link>
                     </nav>
 
-                    <div className="flex items-center gap-6">
+                    {/* Right Side Actions */}
+                    <div className="flex items-center gap-4 ml-auto">
+                        {/* Theme Switcher */}
                         <ThemeSwitcher />
+
+                        {/* Translation Widget */}
                         <TranslationWidget />
+
+                        {/* Sign In Link */}
                         <Link
                             to="/login"
-                            className="hidden sm:block text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
+                            className="hidden md:block text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
                         >
                             {t('nav.signIn')}
                         </Link>
+
+                        {/* Get Started Button */}
                         <Link
                             to="/login"
                             className="px-6 py-3 text-[13px] font-black uppercase tracking-widest text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-xl shadow-blue-600/20 transition-all hover:-translate-y-0.5 active:scale-95"
