@@ -47,13 +47,15 @@ export default function Dashboard() {
                 </nav>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold text-slate-800">Notes <span className="text-slate-400 font-normal">({notes.length})</span></h1>
-                        <div className="flex gap-1 ml-4">
+                        <h1 className="text-2xl font-bold text-white">Notes <span className="text-slate-500 font-normal">({notes.length})</span></h1>
+                        <div className="flex gap-1 ml-4 bg-white/5 p-1 rounded-lg border border-white/5">
                             {filters.map(f => (
                                 <button
                                     key={f}
                                     onClick={() => setActiveFilter(f)}
-                                    className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${activeFilter === f ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-200'
+                                    className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${activeFilter === f
+                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                                         }`}
                                 >
                                     {f}
@@ -63,21 +65,21 @@ export default function Dashboard() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <div className="flex bg-slate-200 p-1 rounded-lg">
+                        <div className="flex bg-white/5 p-1 rounded-lg border border-white/5">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white/10 text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
                             >
                                 <LayoutGrid size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('mindmap')}
-                                className={`p-1.5 rounded-md transition-all ${viewMode === 'mindmap' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'mindmap' ? 'bg-white/10 text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
                             >
                                 <Network size={18} />
                             </button>
                         </div>
-                        <button className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-all font-semibold text-sm">
+                        <button className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-500 transition-all font-semibold text-sm shadow-lg shadow-blue-600/20 active:scale-95">
                             <Plus size={18} />
                         </button>
                     </div>
@@ -89,31 +91,35 @@ export default function Dashboard() {
                 {viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notes.map(note => (
-                            <div key={note.id} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col group h-[280px]">
-                                <div className="flex items-start justify-between mb-4">
+                            <div key={note.id} className="bg-slate-900 rounded-3xl p-7 border border-white/5 shadow-xl hover:shadow-blue-500/5 hover:border-white/10 transition-all flex flex-col group h-[300px] relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent -mr-16 -mt-16 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
+                                <div className="flex items-start justify-between mb-5 relative z-10">
                                     <div className="flex items-center gap-2">
-                                        <div className={`w-1.5 h-1.5 rounded-full bg-${note.color}-500 shadow-[0_0_8px] shadow-${note.color}-500/50`}></div>
-                                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{note.category}</span>
+                                        <div className={`w-2 h-2 rounded-full border border-white/20`} style={{ backgroundColor: note.color, boxShadow: `0 0 12px ${note.color}` }}></div>
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{note.category}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        {note.locked && <Lock size={14} className="text-slate-300" />}
-                                        <button className="text-slate-300 hover:text-slate-600">
+                                        {note.locked && <Lock size={14} className="text-slate-600" />}
+                                        <button className="text-slate-600 hover:text-slate-400 transition-colors">
                                             <MoreHorizontal size={18} />
                                         </button>
                                     </div>
                                 </div>
 
-                                <h3 className="font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">{note.title}</h3>
-                                <p className="text-xs text-slate-500 line-clamp-4 leading-relaxed flex-1">
+                                <h3 className="font-bold text-lg text-slate-100 mb-3 group-hover:text-blue-400 transition-colors relative z-10">{note.title}</h3>
+                                <p className="text-sm text-slate-400 line-clamp-4 leading-relaxed flex-1 relative z-10">
                                     {note.snippet}
                                 </p>
 
-                                <div className="pt-4 border-t border-slate-50 mt-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <img src={`https://ui-avatars.com/?name=${note.author}&background=random&size=24`} className="w-6 h-6 rounded-full" alt="" />
-                                        <span className="text-[10px] font-semibold text-slate-700">{note.author}</span>
+                                <div className="pt-5 border-t border-white/5 mt-5 flex items-center justify-between relative z-10">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="relative">
+                                            <img src={`https://ui-avatars.com/?name=${note.author}&background=random&size=32`} className="w-8 h-8 rounded-full border border-white/10" alt="" />
+                                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></div>
+                                        </div>
+                                        <span className="text-xs font-semibold text-slate-300">{note.author}</span>
                                     </div>
-                                    <span className="text-[10px] font-medium text-slate-400 uppercase">{note.date}</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{note.date}</span>
                                 </div>
                             </div>
                         ))}

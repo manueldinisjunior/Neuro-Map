@@ -8,9 +8,9 @@ export function PublicLayout() {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+            <header className="sticky top-0 z-50 bg-slate-950/50 backdrop-blur-xl border-b border-white/5">
+                <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
                         <div className="p-2 bg-blue-600 rounded-lg text-white group-hover:bg-blue-700 transition-colors">
                             <BrainCircuit size={24} />
@@ -21,16 +21,16 @@ export function PublicLayout() {
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-8">
-                        <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                        <Link to="/" className="text-sm font-medium text-slate-400 hover:text-blue-400 transition-colors">
                             {t('nav.home')}
                         </Link>
-                        <Link to="/about" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                        <Link to="/about" className="text-sm font-medium text-slate-400 hover:text-blue-400 transition-colors">
                             {t('nav.about')}
                         </Link>
-                        <Link to="/services" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                        <Link to="/services" className="text-sm font-medium text-slate-400 hover:text-blue-400 transition-colors">
                             {t('nav.services')}
                         </Link>
-                        <Link to="/contact" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                        <Link to="/contact" className="text-sm font-medium text-slate-400 hover:text-blue-400 transition-colors">
                             {t('nav.contact')}
                         </Link>
                     </nav>
@@ -39,13 +39,13 @@ export function PublicLayout() {
                         <TranslationWidget />
                         <Link
                             to="/login"
-                            className="hidden sm:block px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="hidden sm:block px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
                         >
                             {t('nav.signIn')}
                         </Link>
                         <Link
                             to="/login"
-                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow transition-all"
+                            className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
                         >
                             {t('nav.getStarted')}
                         </Link>

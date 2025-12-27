@@ -43,8 +43,8 @@ export default function Onboarding() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F9FB] flex items-center justify-center p-6 font-sans">
-            <div className="w-full max-w-4xl bg-white rounded-[32px] shadow-2xl shadow-blue-500/5 overflow-hidden border border-slate-100 flex min-h-[600px]">
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 font-sans">
+            <div className="w-full max-w-4xl bg-slate-900 rounded-[32px] shadow-2xl shadow-blue-500/5 overflow-hidden border border-white/5 flex min-h-[600px]">
                 {/* Visual Side */}
                 <div className="hidden lg:flex w-1/3 bg-blue-600 p-12 flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
@@ -87,12 +87,12 @@ export default function Onboarding() {
                         >
                             {step === 1 && (
                                 <div className="space-y-8">
-                                    <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                                    <div className="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center border border-blue-500/20">
                                         <GraduationCap size={32} />
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl font-bold text-slate-800 mb-2">What is your profession?</h1>
-                                        <p className="text-slate-500">We'll use this to recommend relevant topics.</p>
+                                        <h1 className="text-3xl font-bold text-white mb-2">What is your profession?</h1>
+                                        <p className="text-slate-400">We'll use this to recommend relevant topics.</p>
                                     </div>
                                     <div className="grid grid-cols-1 gap-3">
                                         {['Student', 'Professional', 'Researcher', 'Entrepreneur', 'Other'].map(p => (
@@ -100,12 +100,12 @@ export default function Onboarding() {
                                                 key={p}
                                                 onClick={() => setFormData({ ...formData, profession: p })}
                                                 className={`p-4 rounded-xl border-2 text-left transition-all flex items-center justify-between ${formData.profession === p
-                                                        ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-sm'
-                                                        : 'border-slate-100 hover:border-blue-200'
+                                                    ? 'border-blue-600 bg-blue-600/10 text-white shadow-sm'
+                                                    : 'border-white/5 bg-white/5 hover:border-blue-500/50 text-slate-300'
                                                     }`}
                                             >
                                                 <span className="font-semibold">{p}</span>
-                                                {formData.profession === p && <CheckCircle2 size={20} className="text-blue-600" />}
+                                                {formData.profession === p && <CheckCircle2 size={20} className="text-blue-500" />}
                                             </button>
                                         ))}
                                     </div>
@@ -114,12 +114,12 @@ export default function Onboarding() {
 
                             {step === 2 && (
                                 <div className="space-y-8">
-                                    <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
+                                    <div className="w-16 h-16 bg-orange-500/10 text-orange-400 rounded-2xl flex items-center justify-center border border-orange-500/20">
                                         <Target size={32} />
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl font-bold text-slate-800 mb-2">Primary Learning Goal</h1>
-                                        <p className="text-slate-500">What do you want to achieve with Neuro Notes?</p>
+                                        <h1 className="text-3xl font-bold text-white mb-2">Primary Learning Goal</h1>
+                                        <p className="text-slate-400">What do you want to achieve with Neuro Notes?</p>
                                     </div>
                                     <div className="grid grid-cols-1 gap-3">
                                         {[
@@ -131,11 +131,11 @@ export default function Onboarding() {
                                                 key={g.id}
                                                 onClick={() => setFormData({ ...formData, goal: g.label })}
                                                 className={`p-6 rounded-xl border-2 text-left transition-all flex items-center gap-4 ${formData.goal === g.label
-                                                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                                        : 'border-slate-100 hover:border-blue-200'
+                                                    ? 'border-blue-600 bg-blue-600/10 text-white'
+                                                    : 'border-white/5 bg-white/5 hover:border-blue-500/50 text-slate-300'
                                                     }`}
                                             >
-                                                <g.icon size={24} className={formData.goal === g.label ? 'text-blue-600' : 'text-slate-400'} />
+                                                <g.icon size={24} className={formData.goal === g.label ? 'text-blue-500' : 'text-slate-500'} />
                                                 <span className="font-semibold">{g.label}</span>
                                             </button>
                                         ))}
@@ -145,12 +145,12 @@ export default function Onboarding() {
 
                             {step === 3 && (
                                 <div className="space-y-8">
-                                    <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center">
+                                    <div className="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center border border-purple-500/20">
                                         <Sparkles size={32} />
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl font-bold text-slate-800 mb-2">Select Interests</h1>
-                                        <p className="text-slate-500">Pick at least 3 to build your initial map.</p>
+                                        <h1 className="text-3xl font-bold text-white mb-2">Select Interests</h1>
+                                        <p className="text-slate-400">Pick at least 3 to build your initial map.</p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {interests.map(i => (
@@ -158,8 +158,8 @@ export default function Onboarding() {
                                                 key={i}
                                                 onClick={() => toggleInterest(i)}
                                                 className={`px-4 py-2.5 rounded-full border-2 text-sm font-semibold transition-all ${formData.interests.includes(i)
-                                                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
-                                                        : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
+                                                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                                    : 'bg-white border-slate-100 text-slate-600 hover:border-slate-200'
                                                     }`}
                                             >
                                                 {i}
@@ -178,12 +178,12 @@ export default function Onboarding() {
                                         <div className="absolute -inset-4 border-2 border-blue-100 rounded-[40px] animate-ping opacity-25"></div>
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl font-bold text-slate-800 mb-2">Generating Your Space</h1>
-                                        <p className="text-slate-500 max-w-sm mx-auto">
+                                        <h1 className="text-3xl font-bold text-white mb-2">Generating Your Space</h1>
+                                        <p className="text-slate-400 max-w-sm mx-auto">
                                             We're creating a custom mind map based on your {formData.interests.length} selected interests.
                                         </p>
                                     </div>
-                                    <div className="w-full bg-slate-100 h-2 rounded-full max-w-xs overflow-hidden">
+                                    <div className="w-full bg-slate-800 h-2 rounded-full max-w-xs overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: '100%' }}
@@ -198,11 +198,11 @@ export default function Onboarding() {
                     </AnimatePresence>
 
                     {step < 4 && (
-                        <div className="flex items-center justify-between pt-8 border-t border-slate-50">
+                        <div className="flex items-center justify-between pt-8 border-t border-white/5">
                             <button
                                 onClick={prevStep}
                                 disabled={step === 1}
-                                className={`flex items-center gap-2 font-bold transition-colors ${step === 1 ? 'opacity-0' : 'text-slate-400 hover:text-slate-600 cursor-pointer'
+                                className={`flex items-center gap-2 font-bold transition-colors ${step === 1 ? 'opacity-0' : 'text-slate-500 hover:text-slate-300 cursor-pointer'
                                     }`}
                             >
                                 <ArrowLeft size={20} />

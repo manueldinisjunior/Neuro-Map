@@ -7,7 +7,7 @@ export default function Home() {
         <div className="bg-slate-50">
             {/* Hero Section */}
             <section className="relative overflow-hidden pt-20 pb-32">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-50 opacity-50" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20 opacity-50" />
                 <div className="container mx-auto px-4 relative">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
@@ -15,13 +15,13 @@ export default function Home() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6">
+                            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
                                 Map Your Mind <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400">
                                     Visualize Your Growth
                                 </span>
                             </h1>
-                            <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
                                 Neuro Notes transforms your scattered thoughts into a living, breathing network of knowledge.
                                 Write freely, and watch your personal universe of ideas expand.
                             </p>
@@ -32,7 +32,7 @@ export default function Home() {
                                     <ArrowRight size={20} />
                                 </Link>
                                 <Link to="/about" className="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all">
-                                    Learn How fit Works
+                                    Learn How It Works
                                 </Link>
                             </div>
                         </motion.div>
@@ -41,11 +41,11 @@ export default function Home() {
             </section>
 
             {/* Features Grid */}
-            <section className="py-24 bg-white">
+            <section className="py-24 bg-slate-950 border-y border-white/5">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-slate-900 mb-4">Why use Neuro Notes?</h2>
-                        <p className="text-lg text-slate-600">Built for deep thinkers, learners, and creators.</p>
+                        <h2 className="text-3xl font-bold text-white mb-4">Why use Neuro Notes?</h2>
+                        <p className="text-lg text-slate-400">Built for deep thinkers, learners, and creators.</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -107,11 +107,11 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
     return (
         <motion.div
             whileHover={{ y: -5 }}
-            className="p-8 bg-slate-50 rounded-2xl border border-slate-200 hover:border-blue-200 hover:shadow-lg transition-all"
+            className="p-8 bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/10 transition-all"
         >
-            <div className="mb-6 p-4 bg-white rounded-xl inline-block shadow-sm ring-1 ring-slate-100">{icon}</div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
-            <p className="text-slate-600 leading-relaxed">{description}</p>
+            <div className="mb-6 p-4 bg-slate-800 rounded-xl inline-block shadow-sm ring-1 ring-white/10">{icon}</div>
+            <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+            <p className="text-slate-400 leading-relaxed">{description}</p>
         </motion.div>
     );
 }
