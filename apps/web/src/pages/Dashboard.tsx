@@ -9,10 +9,10 @@ export default function Dashboard() {
     const graphRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [data, setData] = useState({ nodes: [], edges: [] });
+    const [data, setData] = useState<any>({ nodes: [], links: [] });
     const [notes, setNotes] = useState<any[]>([]);
     const [dimensions, setDimensions] = useState({ w: 0, h: 0 });
-    const [viewMode, setViewMode] = useState<'grid' | 'mindmap'>('grid');
+    const [viewMode, setViewMode] = useState<'grid' | 'mindmap'>('mindmap'); // Default to mindmap as requested
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
 
@@ -20,12 +20,63 @@ export default function Dashboard() {
         const loadData = async () => {
             setLoading(true);
             try {
+                // Try to get data from onboarding
+                const onboardingRaw = localStorage.getItem('onboarding_data');
+                const onboardingData = onboardingRaw ? JSON.parse(onboardingRaw) : null;
+
                 const [mapRes, notesRes] = await Promise.all([
-                    fetchMap(),
-                    fetchRecentNotes()
+                    fetchMap().catch(() => null),
+                    fetchRecentNotes().catch(() => [])
                 ]);
-                setData(mapRes as any);
-                setNotes(notesRes);
+
+                if (onboardingData) {
+                    // "Compile" information into the graph structure like the image
+                    const nodes: any[] = [
+                        { id: 'root', label: onboardingData.name || 'My Neuro Map', val: 20, color: '#e0e0e0', x: 0, y: 0, fx: 0, fy: 0 },
+                    ];
+                    const links: any[] = [];
+
+                    // Add Profession
+                    if (onboardingData.profession) {
+                        nodes.push({ id: 'prof', label: onboardingData.profession, val: 12, color: '#a0a0a0' });
+                        links.push({ source: 'root', target: 'prof' });
+                    }
+
+                    // Add Experience
+                    if (onboardingData.experience) {
+                        nodes.push({ id: 'exp', label: onboardingData.experience, val: 10, color: '#a0a0a0' });
+                        links.push({ source: 'root', target: 'exp' });
+                    }
+
+                    // Add Bio
+                    if (onboardingData.bio) {
+                        nodes.push({ id: 'bio', label: onboardingData.bio.substring(0, 30) + '...', val: 10, color: '#a0a0a0' });
+                        links.push({ source: 'root', target: 'bio' });
+                    }
+
+                    // Add Skills
+                    if (onboardingData.skills) {
+                        const skillsList = onboardingData.skills.split(',').map((s: string) => s.trim());
+                        skillsList.forEach((skill: string, idx: number) => {
+                            nodes.push({ id: `skill_${idx}`, label: skill, val: 8, color: '#a0a0a0' });
+                            links.push({ source: 'root', target: `skill_${idx}` });
+                        });
+                    }
+
+                    // Add Interests
+                    if (onboardingData.interests) {
+                        onboardingData.interests.forEach((interest: string, idx: number) => {
+                            nodes.push({ id: `interest_${idx}`, label: interest, val: 8, color: '#a0a0a0' });
+                            links.push({ source: 'root', target: `interest_${idx}` });
+                        });
+                    }
+
+                    setData({ nodes, links });
+                } else if (mapRes) {
+                    setData(mapRes);
+                }
+
+                setNotes(notesRes || []);
             } catch (error) {
                 console.error('Failed to fetch dashboard data:', error);
             } finally {
@@ -46,7 +97,7 @@ export default function Dashboard() {
         };
 
         window.addEventListener('resize', handleResize);
-        handleResize();
+        setTimeout(handleResize, 100); // Small delay to ensure container is ready
 
         return () => window.removeEventListener('resize', handleResize);
     }, [viewMode]);
@@ -122,15 +173,7 @@ export default function Dashboard() {
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
                     </div>
-                ) : notes.length === 0 ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500">
-                        <div className="w-20 h-20 bg-zinc-900 rounded-[30px] flex items-center justify-center mb-6 border border-zinc-800">
-                            <Plus className="w-8 h-8 opacity-20" />
-                        </div>
-                        <p className="text-xl font-bold">No notes yet</p>
-                        <p className="text-sm font-medium mt-1">Start by creating your first note or completing onboarding.</p>
-                    </div>
-                ) : viewMode === 'grid' ? (
+                ) : viewMode === 'grid' && notes.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {notes.filter(n => activeFilter === 'all' || n.category === activeFilter).map(note => (
                             <div key={note.id} className="bg-zinc-900/50 rounded-3xl p-8 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-900 transition-all group flex flex-col h-[320px]">
@@ -174,39 +217,59 @@ export default function Dashboard() {
                         ))}
                     </div>
                 ) : (
-                    <div className="absolute inset-0 bg-zinc-950 rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
+                    <div className="absolute inset-0 bg-[#0d1b1e] rounded-3xl border border-[#1a2e31] overflow-hidden shadow-2xl relative">
+                        {/* Background subtle grid similar to the image */}
+                        <div className="absolute inset-0 opacity-10 pointer-events-none"
+                            style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+
                         <ForceGraph2D
                             ref={graphRef}
                             width={dimensions.w}
                             height={dimensions.h}
                             graphData={data}
                             nodeLabel="label"
-                            nodeColor={() => "#3b82f6"}
-                            nodeRelSize={6}
-                            nodeVal={node => (node as any).radius / 2}
-                            linkColor={() => "rgba(255,255,255,0.05)"}
-                            backgroundColor="#09090b"
-                            linkDirectionalParticles={2}
-                            linkDirectionalParticleSpeed={() => 0.005}
-                            linkDirectionalParticleWidth={2}
+                            linkColor={() => "rgba(80,180,200,0.15)"} // Subtle teal lines as in the image
+                            backgroundColor="#0d1b1e"
+                            linkDirectionalParticles={1}
+                            linkDirectionalParticleSpeed={() => 0.003}
+                            linkDirectionalParticleWidth={1}
                             nodeCanvasObject={(node: any, ctx, globalScale) => {
                                 const label = node.label;
                                 const fontSize = 12 / globalScale;
-                                ctx.font = `${fontSize}px Inter, sans-serif`;
+                                ctx.font = `600 ${fontSize}px Inter, sans-serif`;
+
+                                // Node Circle
                                 ctx.beginPath();
-                                ctx.arc(node.x, node.y, node.radius / 3, 0, 2 * Math.PI, false);
-                                ctx.fillStyle = "#3b82f6";
+                                ctx.arc(node.x, node.y, node.val / 2, 0, 2 * Math.PI, false);
+                                ctx.fillStyle = node.color || "#e0e0e0";
                                 ctx.fill();
-                                if (globalScale > 1.2) {
+
+                                // Glow effect (subtle)
+                                ctx.shadowBlur = 15;
+                                ctx.shadowColor = "rgba(255,255,255,0.1)";
+
+                                // Label
+                                if (globalScale > 0.5) {
                                     ctx.textAlign = 'center';
                                     ctx.textBaseline = 'middle';
-                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                                    ctx.fillText(label, node.x, node.y + (node.radius / 3) + 2.5);
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+
+                                    // Wrap text for labels if they are too long
+                                    const maxWidth = 80 / globalScale;
+                                    const words = label.split(' ');
+                                    let line = '';
+                                    let yOffset = node.val / 2 + 5 / globalScale;
+
+                                    if (label.length > 20) {
+                                        ctx.fillText(label.substring(0, 20) + '...', node.x, node.y + yOffset);
+                                    } else {
+                                        ctx.fillText(label, node.x, node.y + yOffset);
+                                    }
                                 }
                             }}
                             onNodeClick={node => {
                                 graphRef.current?.centerAt(node.x, node.y, 800);
-                                graphRef.current?.zoom(4, 800);
+                                graphRef.current?.zoom(3, 800);
                             }}
                         />
                     </div>

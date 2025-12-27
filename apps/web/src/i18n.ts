@@ -159,6 +159,20 @@ const resources = {
                     "subtitle": "We'll use this to recommend relevant topics.",
                     "options": ["Student", "Professional", "Researcher", "Entrepreneur", "Other"]
                 },
+                "stepCV": {
+                    "title": "Tell us about yourself",
+                    "subtitle": "This helps us build your initial knowledge map.",
+                    "name": "Full Name",
+                    "bio": "Brief Bio",
+                    "experience": "Key Experience",
+                    "skills": "Skills (comma separated)",
+                    "placeholders": {
+                        "name": "e.g. John Doe",
+                        "bio": "e.g. Passionate software engineer...",
+                        "experience": "e.g. 5 years at Tech Corp",
+                        "skills": "e.g. React, TypeScript, AI"
+                    }
+                },
                 "step2": {
                     "title": "Primary Learning Goal",
                     "subtitle": "What do you want to achieve with Neuro Notes?",
@@ -340,6 +354,20 @@ const resources = {
                     "title": "Was ist dein Beruf?",
                     "subtitle": "Wir werden dies nutzen, um relevante Themen zu empfehlen.",
                     "options": ["Student", "Berufstätig", "Forscher", "Unternehmer", "Andere"]
+                },
+                "stepCV": {
+                    "title": "Erzählen Sie uns von sich",
+                    "subtitle": "Dies hilft uns, Ihre erste Wissenskarte zu erstellen.",
+                    "name": "Vollständiger Name",
+                    "bio": "Kurzer Lebenslauf",
+                    "experience": "Wichtige Erfahrung",
+                    "skills": "Fähigkeiten (kommagetrennt)",
+                    "placeholders": {
+                        "name": "z.B. Max Mustermann",
+                        "bio": "z.B. Leidenschaftlicher Softwareentwickler...",
+                        "experience": "z.B. 5 Jahre bei Tech Corp",
+                        "skills": "z.B. React, TypeScript, KI"
+                    }
                 },
                 "step2": {
                     "title": "Primäres Lernziel",
@@ -523,6 +551,20 @@ const resources = {
                     "subtitle": "Usaremos isso para recomendar tópicos relevantes.",
                     "options": ["Estudante", "Profissional", "Pesquisador", "Empreendedor", "Outro"]
                 },
+                "stepCV": {
+                    "title": "Conte-nos sobre você",
+                    "subtitle": "Isso nos ajuda a construir seu mapa de conhecimento inicial.",
+                    "name": "Nome Completo",
+                    "bio": "Breve Biografia",
+                    "experience": "Experiência Principal",
+                    "skills": "Habilidades (separadas por vírgula)",
+                    "placeholders": {
+                        "name": "ex: João Silva",
+                        "bio": "ex: Engenheiro de software apaixonado...",
+                        "experience": "ex: 5 anos na Tech Corp",
+                        "skills": "ex: React, TypeScript, IA"
+                    }
+                },
                 "step2": {
                     "title": "Principal Objetivo de Aprendizado",
                     "subtitle": "O que você deseja alcançar com o Neuro Notes?",
@@ -704,6 +746,20 @@ const resources = {
                     "title": "¿Cuál es tu profesión?",
                     "subtitle": "Usaremos esto para recomendarte temas relevantes.",
                     "options": ["Estudiante", "Profesional", "Investigador", "Emprendedor", "Otro"]
+                },
+                "stepCV": {
+                    "title": "Cuéntanos sobre ti",
+                    "subtitle": "Esto nos ayuda a construir tu mapa de conocimiento inicial.",
+                    "name": "Nombre completo",
+                    "bio": "Breve biografía",
+                    "experience": "Experiencia clave",
+                    "skills": "Habilidades (separadas por comas)",
+                    "placeholders": {
+                        "name": "ej. Juan Pérez",
+                        "bio": "ej. Ingeniero de software apasionado...",
+                        "experience": "ej. 5 años en Tech Corp",
+                        "skills": "ej. React, TypeScript, IA"
+                    }
                 },
                 "step2": {
                     "title": "Objetivo de Aprendizaje",

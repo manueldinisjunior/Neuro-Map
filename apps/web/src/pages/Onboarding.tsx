@@ -17,17 +17,22 @@ export default function Onboarding() {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         profession: '',
+        name: '',
+        bio: '',
+        experience: '',
+        skills: '',
         goal: '',
         interests: [] as string[]
     });
 
-    const totalSteps = 4;
+    const totalSteps = 5;
 
     const nextStep = async () => {
         if (step < totalSteps) {
             setLoading(true);
             try {
-                await updateOnboardingState({ step: step + 1, ...formData });
+                // Simulate saving to backend
+                localStorage.setItem('onboarding_data', JSON.stringify(formData));
                 setStep(step + 1);
             } catch (error) {
                 console.error('Failed to update onboarding state:', error);
@@ -49,15 +54,7 @@ export default function Onboarding() {
 
     const prevStep = async () => {
         if (step > 1) {
-            setLoading(true);
-            try {
-                await updateOnboardingState({ step: step - 1, ...formData });
-                setStep(step - 1);
-            } catch (error) {
-                console.error('Failed to go back:', error);
-            } finally {
-                setLoading(false);
-            }
+            setStep(step - 1);
         }
     };
 
@@ -107,14 +104,14 @@ export default function Onboarding() {
 
                     <div className="relative z-10">
                         <div className="flex gap-3 mb-6">
-                            {[1, 2, 3, 4].map(s => (
+                            {[1, 2, 3, 4, 5].map(s => (
                                 <div
                                     key={s}
                                     className={`h-2 rounded-full transition-all duration-500 ease-out ${s <= step ? 'w-12 bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'w-4 bg-white/20'}`}
                                 ></div>
                             ))}
                         </div>
-                        <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">{t('onboarding.step')} {step} {t('onboarding.of')} 4</p>
+                        <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">{t('onboarding.step')} {step} {t('onboarding.of')} 5</p>
                     </div>
                 </div>
 
@@ -127,7 +124,7 @@ export default function Onboarding() {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -30, opacity: 0 }}
                             transition={{ duration: 0.5, ease: "easeOut" }}
-                            className="flex-1"
+                            className="flex-1 overflow-y-auto pr-2 custom-scrollbar"
                         >
                             {step === 1 && (
                                 <div className="space-y-10 max-w-md">
@@ -161,9 +158,63 @@ export default function Onboarding() {
                             )}
 
                             {step === 2 && (
+                                <div className="space-y-8 max-w-lg">
+                                    <div className="w-20 h-20 bg-emerald-600/10 text-emerald-500 rounded-[28px] flex items-center justify-center border border-emerald-500/10 shadow-inner">
+                                        <Target size={40} />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-4xl font-black text-white mb-3 tracking-tight">{t('onboarding.stepCV.title')}</h1>
+                                        <p className="text-zinc-500 text-lg font-medium">{t('onboarding.stepCV.subtitle')}</p>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">{t('onboarding.stepCV.name')}</label>
+                                            <input
+                                                type="text"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                placeholder={t('onboarding.stepCV.placeholders.name')}
+                                                className="w-full bg-white/5 border-2 border-white/5 rounded-2xl p-4 text-white focus:border-blue-600 outline-none transition-all placeholder:text-zinc-700"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">{t('onboarding.stepCV.bio')}</label>
+                                            <textarea
+                                                value={formData.bio}
+                                                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                                placeholder={t('onboarding.stepCV.placeholders.bio')}
+                                                rows={2}
+                                                className="w-full bg-white/5 border-2 border-white/5 rounded-2xl p-4 text-white focus:border-blue-600 outline-none transition-all placeholder:text-zinc-700 resize-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">{t('onboarding.stepCV.experience')}</label>
+                                            <input
+                                                type="text"
+                                                value={formData.experience}
+                                                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                                                placeholder={t('onboarding.stepCV.placeholders.experience')}
+                                                className="w-full bg-white/5 border-2 border-white/5 rounded-2xl p-4 text-white focus:border-blue-600 outline-none transition-all placeholder:text-zinc-700"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">{t('onboarding.stepCV.skills')}</label>
+                                            <input
+                                                type="text"
+                                                value={formData.skills}
+                                                onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                                                placeholder={t('onboarding.stepCV.placeholders.skills')}
+                                                className="w-full bg-white/5 border-2 border-white/5 rounded-2xl p-4 text-white focus:border-blue-600 outline-none transition-all placeholder:text-zinc-700"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 3 && (
                                 <div className="space-y-10 max-w-lg">
                                     <div className="w-20 h-20 bg-amber-600/10 text-amber-500 rounded-[28px] flex items-center justify-center border border-amber-500/10 shadow-inner">
-                                        <Target size={40} />
+                                        <Rocket size={40} />
                                     </div>
                                     <div>
                                         <h1 className="text-4xl font-black text-white mb-3 tracking-tight">{t('onboarding.step2.title')}</h1>
@@ -190,7 +241,7 @@ export default function Onboarding() {
                                 </div>
                             )}
 
-                            {step === 3 && (
+                            {step === 4 && (
                                 <div className="space-y-10">
                                     <div className="w-20 h-20 bg-purple-600/10 text-purple-500 rounded-[28px] flex items-center justify-center border border-purple-500/10 shadow-inner">
                                         <Sparkles size={40} />
@@ -216,7 +267,7 @@ export default function Onboarding() {
                                 </div>
                             )}
 
-                            {step === 4 && (
+                            {step === 5 && (
                                 <div className="space-y-12 flex flex-col items-center justify-center h-full text-center">
                                     <div className="relative">
                                         <motion.div
@@ -238,7 +289,7 @@ export default function Onboarding() {
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: '100%' }}
-                                            transition={{ duration: 2.5, ease: "easeInOut" }}
+                                            transition={{ duration: 4.5, ease: "easeInOut" }}
                                             onAnimationComplete={nextStep}
                                             className="h-full bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.8)]"
                                         ></motion.div>
@@ -248,7 +299,7 @@ export default function Onboarding() {
                         </motion.div>
                     </AnimatePresence>
 
-                    {step < 4 && (
+                    {step < 5 && (
                         <div className="flex items-center justify-between pt-10 border-t border-white/5">
                             <button
                                 onClick={prevStep}
@@ -263,8 +314,9 @@ export default function Onboarding() {
                                 onClick={nextStep}
                                 disabled={
                                     (step === 1 && !formData.profession) ||
-                                    (step === 2 && !formData.goal) ||
-                                    (step === 3 && formData.interests.length < 3)
+                                    (step === 2 && (!formData.name || !formData.skills)) ||
+                                    (step === 3 && !formData.goal) ||
+                                    (step === 4 && formData.interests.length < 3)
                                 }
                                 className="bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed text-white px-10 py-5 rounded-[20px] font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 transition-all shadow-2xl shadow-blue-600/30 hover:-translate-y-1 active:scale-95 cursor-pointer"
                             >
