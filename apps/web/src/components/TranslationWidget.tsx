@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { button } from 'framer-motion/client';
 
 type Language = {
   code: string;
@@ -61,13 +62,4 @@ export function TranslationWidget() {
     </div>
   );
 }
-<span className="text-lg">{lang.flag}</span>
-{ lang.name }
-              </button >
-            ))}
-          </div >
-        </>
-      )}
-    </div >
-  );
-}
+
