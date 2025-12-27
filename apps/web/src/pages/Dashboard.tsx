@@ -69,17 +69,25 @@ export default function Dashboard() {
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white/10 text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                aria-label="Grid view"
+                                title="Grid view"
                             >
                                 <LayoutGrid size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('mindmap')}
                                 className={`p-1.5 rounded-md transition-all ${viewMode === 'mindmap' ? 'bg-white/10 text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                aria-label="Mind map view"
+                                title="Mind map view"
                             >
                                 <Network size={18} />
                             </button>
                         </div>
-                        <button className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-500 transition-all font-semibold text-sm shadow-lg shadow-blue-600/20 active:scale-95">
+                        <button
+                            className="px-3 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-500 transition-all font-semibold text-sm shadow-lg shadow-blue-600/20 active:scale-95"
+                            aria-label="Add new note"
+                            title="Add new note"
+                        >
                             <Plus size={18} />
                         </button>
                     </div>
@@ -100,7 +108,11 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         {note.locked && <Lock size={14} className="text-slate-600" />}
-                                        <button className="text-slate-600 hover:text-slate-400 transition-colors">
+                                        <button
+                                            className="text-slate-600 hover:text-slate-400 transition-colors"
+                                            aria-label="More options"
+                                            title="More options"
+                                        >
                                             <MoreHorizontal size={18} />
                                         </button>
                                     </div>
