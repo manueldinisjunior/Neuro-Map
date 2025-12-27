@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type Language = {
   code: string;
@@ -15,8 +16,15 @@ const languages: Language[] = [
 ];
 
 export function TranslationWidget() {
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState(languages[0]);
+
+  const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+
+  const handleLanguageChange = (lang: Language) => {
+    i18n.changeLanguage(lang.code);
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -39,15 +47,9 @@ export function TranslationWidget() {
             {languages.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => {
-                  setCurrentLang(lang);
-                  setIsOpen(false);
-                  // Implementation for actual translation would utilize i18n hooks here
-                  console.log(`Switched to ${lang.name}`);
-                }}
-                className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-3 ${
-                  currentLang.code === lang.code ? 'text-blue-600 font-medium bg-blue-50/50' : 'text-slate-600'
-                }`}
+                onClick={() => handleLanguageChange(lang)}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-3 ${currentLang.code === lang.code ? 'text-blue-600 font-medium bg-blue-50/50' : 'text-slate-600'
+                  }`}
               >
                 <span className="text-lg">{lang.flag}</span>
                 {lang.name}
@@ -57,5 +59,15 @@ export function TranslationWidget() {
         </>
       )}
     </div>
+  );
+}
+<span className="text-lg">{lang.flag}</span>
+{ lang.name }
+              </button >
+            ))}
+          </div >
+        </>
+      )}
+    </div >
   );
 }
