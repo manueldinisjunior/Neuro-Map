@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { button } from 'framer-motion/client';
 
 type Language = {
   code: string;
@@ -31,11 +30,11 @@ export function TranslationWidget() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-slate-50 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-xl transition-all border border-transparent hover:border-zinc-800"
         aria-label="Select language"
       >
         <Globe size={18} />
-        <span className="hidden sm:inline">{currentLang.name}</span>
+        <span className="hidden sm:inline font-bold uppercase tracking-wider text-[11px]">{currentLang.code}</span>
       </button>
 
       {isOpen && (
@@ -44,12 +43,12 @@ export function TranslationWidget() {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="absolute right-0 mt-3 w-48 bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 py-2 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang)}
-                className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-3 ${currentLang.code === lang.code ? 'text-blue-600 font-medium bg-blue-50/50' : 'text-slate-600'
+                className={`w-full text-left px-4 py-2.5 text-sm hover:bg-zinc-800 flex items-center gap-3 transition-colors ${currentLang.code === lang.code ? 'text-blue-400 font-bold bg-blue-500/5' : 'text-zinc-400 font-medium'
                   }`}
               >
                 <span className="text-lg">{lang.flag}</span>

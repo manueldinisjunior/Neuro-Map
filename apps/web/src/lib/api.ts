@@ -40,3 +40,29 @@ export async function createNote(input: CreateNoteInput) {
 
   return res.json();
 }
+
+export async function fetchRecentNotes() {
+  const res = await fetch(`${API_URL}/notes`);
+  if (!res.ok) throw new Error('Failed to fetch notes');
+  return res.json();
+}
+
+export async function updateOnboardingState(data: { step: number; profession?: string; goal?: string; interests?: string[] }) {
+  const res = await fetch(`${API_URL}/onboarding/state`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update onboarding');
+  return res.json();
+}
+
+export async function completeOnboarding() {
+  const res = await fetch(`${API_URL}/onboarding/complete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Failed to complete onboarding');
+  return res.json();
+}
+

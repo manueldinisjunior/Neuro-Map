@@ -8,13 +8,25 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  avatarUrl String?
-  createdAt DateTime @default(now())
-  topics    Topic[]
-  notes     Note[]
+  id              String           @id @default(cuid())
+  email           String           @unique
+  name            String?
+  avatarUrl       String?
+  onboardingState OnboardingState?
+  createdAt       DateTime         @default(now())
+  topics          Topic[]
+  notes           Note[]
+}
+
+model OnboardingState {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  step       Int      @default(1)
+  profession String?
+  goal       String?
+  interests  String[]
+  completed  Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model Topic {

@@ -1,55 +1,57 @@
 import { motion } from 'framer-motion';
-import { Target, Share2, Layers, Zap, LayoutDashboard, Brain } from 'lucide-react';
+import { Target, Zap, LayoutDashboard, Brain } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Services() {
+    const { t } = useTranslation();
+
+    const roadmapItems = t('services.roadmap.items', { returnObjects: true }) as string[];
+
     return (
-        <div className="py-20 bg-slate-50">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-2xl mx-auto mb-16">
-                    <h1 className="text-4xl font-bold text-slate-900 mb-4">Features & Services</h1>
-                    <p className="text-lg text-slate-600">
-                        Everything you need to organize your inner world.
+        <div className="py-32 bg-zinc-950 min-h-screen">
+            <div className="container mx-auto px-6 max-w-6xl">
+                <div className="text-center max-w-2xl mx-auto mb-20">
+                    <span className="text-blue-500 font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Capabilities</span>
+                    <h1 className="text-5xl font-black text-white mb-6 tracking-tighter">{t('services.title')}</h1>
+                    <p className="text-xl text-zinc-500 font-medium">
+                        {t('services.subtitle')}
                     </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                     <Feature
-                        title="Thought Capture"
-                        desc="A distraction-free editor designed for speed. Capture ideas the moment they strike."
+                        title={t('services.capture.title')}
+                        desc={t('services.capture.desc')}
                         icon={<Zap className="w-6 h-6 text-yellow-500" />}
                     />
                     <Feature
-                        title="Organic Organization"
-                        desc="No folder management required. Tags and natural language processing organize your notes automatically."
+                        title={t('services.org.title')}
+                        desc={t('services.org.desc')}
                         icon={<LayoutDashboard className="w-6 h-6 text-blue-500" />}
                     />
                     <Feature
-                        title="Mind Map Visualization"
-                        desc="The core of Neuro Notes. A real-time, force-directed graph of your knowledge base."
+                        title={t('services.map.title')}
+                        desc={t('services.map.desc')}
                         icon={<Brain className="w-6 h-6 text-purple-500" />}
                     />
                     <Feature
-                        title="Long-term Insights"
-                        desc="Track how your interests shift over time. See which topics are dominating your thinking."
+                        title={t('services.insight.title')}
+                        desc={t('services.insight.desc')}
                         icon={<Target className="w-6 h-6 text-red-500" />}
                     />
                 </div>
 
-                <div className="mt-24 max-w-3xl mx-auto text-center">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-6">Future Roadmap</h2>
-                    <ul className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
-                        <li className="flex items-center gap-3 mb-4 text-slate-600">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-                            AI-powered connections (suggestion of related notes)
-                        </li>
-                        <li className="flex items-center gap-3 mb-4 text-slate-600">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-                            Public sharing of specific knowledge branches
-                        </li>
-                        <li className="flex items-center gap-3 text-slate-600">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-                            Collaborative mind maps for teams
-                        </li>
+                <div className="mt-32 max-w-3xl mx-auto">
+                    <div className="text-center mb-12">
+                         <h2 className="text-3xl font-black text-white tracking-tighter">{t('services.roadmap.title')}</h2>
+                    </div>
+                    <ul className="bg-zinc-900/50 p-10 rounded-[40px] border border-zinc-800/50 backdrop-blur-sm shadow-2xl space-y-6">
+                        {roadmapItems.map((item, index) => (
+                            <li key={index} className="flex items-center gap-4 text-zinc-400 font-bold group">
+                                <span className="w-3 h-3 bg-blue-500 rounded-full group-hover:scale-125 transition-transform" />
+                                {item}
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -60,18 +62,19 @@ export default function Services() {
 function Feature({ title, desc, icon }: { title: string, desc: string, icon: React.ReactNode }) {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex gap-4 p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-all"
+            className="flex gap-6 p-8 bg-zinc-900/30 rounded-[32px] border border-zinc-800/50 hover:bg-zinc-900/50 transition-all group hover:-translate-y-1"
         >
-            <div className="shrink-0 w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center">
+            <div className="shrink-0 w-14 h-14 bg-zinc-950 rounded-2xl flex items-center justify-center border border-zinc-800 group-hover:border-blue-500/30 transition-colors shadow-inner">
                 {icon}
             </div>
             <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
-                <p className="text-slate-600 leading-relaxed">{desc}</p>
+                <h3 className="text-xl font-black text-white mb-3 tracking-tight">{title}</h3>
+                <p className="text-zinc-500 leading-relaxed font-medium">{desc}</p>
             </div>
         </motion.div>
     )
 }
+
