@@ -1,5 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
-import { BrainCircuit } from 'lucide-react';
+import { BrainCircuit, Twitter, Github, Linkedin, Mail } from 'lucide-react';
+import { ScrollToTop } from '../components/ScrollToTop';
+import { TranslationWidget } from '../components/TranslationWidget';
 
 export function PublicLayout() {
     return (
@@ -31,9 +33,10 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex items-center gap-4">
+                        <TranslationWidget />
                         <Link
                             to="/login"
-                            className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="hidden sm:block px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         >
                             Sign In
                         </Link>
@@ -53,17 +56,46 @@ export function PublicLayout() {
 
             <footer className="bg-slate-900 text-slate-400 py-12 mt-20">
                 <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div className="flex items-center gap-2">
-                            <BrainCircuit size={20} />
-                            <span className="font-bold text-slate-200">Neuro Notes</span>
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-2">
+                                <BrainCircuit size={24} className="text-blue-500" />
+                                <span className="font-bold text-xl text-slate-100">Neuro Notes</span>
+                            </div>
+                            <p className="max-w-xs text-sm text-slate-400">
+                                Empower your mind with 3D visualization and structured learning paths.
+                            </p>
                         </div>
-                        <div className="text-sm">
-                            &copy; {new Date().getFullYear()} Neuro Notes. All rights reserved.
+                        
+                        <div className="flex gap-6">
+                            <a href="#" className="hover:text-blue-400 transition-colors" aria-label="Twitter">
+                                <Twitter size={20} />
+                            </a>
+                            <a href="#" className="hover:text-blue-400 transition-colors" aria-label="GitHub">
+                                <Github size={20} />
+                            </a>
+                            <a href="#" className="hover:text-blue-400 transition-colors" aria-label="LinkedIn">
+                                <Linkedin size={20} />
+                            </a>
+                            <a href="#" className="hover:text-blue-400 transition-colors" aria-label="Email">
+                                <Mail size={20} />
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col md:items-end gap-2 text-sm">
+                            <div className="flex gap-6">
+                                <Link to="/privacy" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>
+                                <Link to="/terms" className="hover:text-slate-200 transition-colors">Terms of Service</Link>
+                            </div>
+                            <div>
+                                &copy; {new Date().getFullYear()} Neuro Notes. All rights reserved.
+                            </div>
                         </div>
                     </div>
                 </div>
             </footer>
+            
+            <ScrollToTop />
         </div>
     );
 }
