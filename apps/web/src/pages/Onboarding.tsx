@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { TranslationWidget } from '../components/TranslationWidget';
 import { updateOnboardingState, completeOnboarding } from '../lib/api';
+import { generateProfile } from '../lib/profileService';
 
 export default function Onboarding() {
     const { t } = useTranslation();
@@ -42,10 +43,19 @@ export default function Onboarding() {
         } else {
             setLoading(true);
             try {
-                await completeOnboarding();
+                // Generate the profile using Google API (Gemini)
+                const profile = await generateProfile(formData);
+                localStorage.setItem('user_profile', JSON.stringify(profile));
+                localStorage.setItem('onboarding_completed', 'true');
+
+                // Attempt to notify backend, but don't block if it fails
+                await completeOnboarding().catch(e => console.warn('Backend sync failed:', e));
+
                 navigate('/dashboard');
             } catch (error) {
                 console.error('Failed to complete onboarding:', error);
+                // Force navigate if it gets stuck, to ensure user experience
+                navigate('/dashboard');
             } finally {
                 setLoading(false);
             }

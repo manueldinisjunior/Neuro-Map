@@ -19,11 +19,11 @@ export function DashboardLayout() {
     };
 
     const navItems = [
-        { icon: Calendar, label: 'Diario', path: '/dashboard' },
-        { icon: FileText, label: 'Whiteboards', path: '/whiteboards' },
-        { icon: MessageSquare, label: 'Flashcards', path: '/flashcards', badge: 1 },
-        { icon: Network, label: 'Vista del grafico', path: '/dashboard' },
-        { icon: Home, label: 'Tutte le pagine', path: '/pages' },
+        { icon: Calendar, label: t('dashboard.nav.journal') || 'Journal', path: '/dashboard' },
+        { icon: FileText, label: t('dashboard.nav.whiteboards') || 'Whiteboards', path: '/whiteboards' },
+        { icon: MessageSquare, label: t('dashboard.nav.flashcards') || 'Flashcards', path: '/flashcards', badge: 1 },
+        { icon: Network, label: t('dashboard.nav.mindmap') || 'Graph View', path: '/dashboard' },
+        { icon: Home, label: t('dashboard.nav.allPages') || 'All Pages', path: '/pages' },
     ];
 
     const favorites = [
@@ -37,10 +37,10 @@ export function DashboardLayout() {
             {/* Left Sidebar */}
             <aside className="w-64 bg-[#0d1b1e] border-r border-[#1a2e31] text-zinc-400 flex flex-col flex-shrink-0">
                 <div className="p-8 flex items-center gap-3">
-                    <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                    <Link to="/" className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 hover:scale-105 transition-transform" aria-label="Neuro Notes Home">
                         <BrainCircuit size={22} />
-                    </div>
-                    <span className="font-bold text-xl text-white tracking-tight italic">Logseq <span className="text-[10px] align-top">▼</span></span>
+                    </Link>
+                    <span className="font-bold text-xl text-white tracking-tight">Neuro <span className="text-blue-500">Notes</span></span>
                 </div>
 
                 <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
@@ -68,12 +68,12 @@ export function DashboardLayout() {
                     </div>
 
                     <div className="mb-6">
-                        <p className="px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-500 mb-2">PREFERITI</p>
+                        <p className="px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-500 mb-2">{t('dashboard.favorites') || 'FAVORITES'}</p>
                     </div>
 
                     <div className="mb-6">
                         <p className="px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-500 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                            <span className="hover:text-zinc-300 cursor-pointer">🕓 RECENTI</span>
+                            <span className="hover:text-zinc-300 cursor-pointer">🕓 {t('dashboard.recent') || 'RECENT'}</span>
                         </p>
                         <div className="space-y-1">
                             {['language', 'EasytoRead', "@Let's put standardis...", 'Untitled', 'issue', 'Abstract', 'Estella Oncins'].map(item => (

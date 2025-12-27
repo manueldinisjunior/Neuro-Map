@@ -19,7 +19,8 @@ export function TranslationWidget() {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+  const currentLangCode = i18n.language?.split('-')[0] || 'en';
+  const currentLang = languages.find(l => l.code === currentLangCode) || languages[0];
 
   const handleLanguageChange = (lang: Language) => {
     i18n.changeLanguage(lang.code);

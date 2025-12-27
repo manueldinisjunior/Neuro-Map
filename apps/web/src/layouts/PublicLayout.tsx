@@ -11,7 +11,7 @@ export function PublicLayout() {
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-blue-500/30">
             <header className="sticky top-0 z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-zinc-900/50">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 group">
+                    <Link to="/" className="flex items-center gap-2 group" aria-label="Neuro Notes Home">
                         <div className="p-2 bg-blue-600 rounded-xl text-white group-hover:bg-blue-500 transition-all group-hover:shadow-lg group-hover:shadow-blue-600/20 active:scale-95 shadow-md">
                             <BrainCircuit size={24} />
                         </div>
