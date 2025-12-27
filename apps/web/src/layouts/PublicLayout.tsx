@@ -69,16 +69,16 @@ export function PublicLayout() {
                                 {t('hero.subtitle')}
                             </p>
                             <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="Twitter">
+                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="Twitter" title="Twitter">
                                     <Twitter size={18} />
                                 </a>
-                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="GitHub">
+                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="GitHub" title="GitHub">
                                     <Github size={18} />
                                 </a>
-                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="LinkedIn">
+                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="LinkedIn" title="LinkedIn">
                                     <Linkedin size={18} />
                                 </a>
-                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="Email">
+                                <a href="#" className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center hover:text-blue-500 hover:bg-zinc-800 transition-all border border-zinc-800" aria-label="Email" title="Email">
                                     <Mail size={18} />
                                 </a>
                             </div>

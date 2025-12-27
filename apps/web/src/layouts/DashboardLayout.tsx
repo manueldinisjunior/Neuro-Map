@@ -3,7 +3,7 @@ import {
     BrainCircuit, LogOut, Settings, Plus, Home,
     Calendar, CheckSquare, FileText, GraduationCap,
     CreditCard, HelpCircle, MessageSquare, Search,
-    Bell, ChevronDown, MoreVertical
+    Bell, ChevronDown, MoreVertical, User
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { TranslationWidget } from '../components/TranslationWidget';
@@ -127,14 +127,16 @@ export function DashboardLayout() {
                         <div className="h-6 w-px bg-zinc-800 mx-2" />
                         <button
                             className="p-2.5 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all relative"
-                            aria-label="Notifications"
+                            aria-label={t('common.notifications')}
+                            title={t('common.notifications')}
                         >
                             <Bell size={18} />
                             <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                         </button>
                         <button
                             className="p-2.5 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all"
-                            aria-label="User profile"
+                            aria-label={t('common.profile')}
+                            title={t('common.profile')}
                         >
                             <User size={18} />
                         </button>
@@ -165,7 +167,11 @@ export function DashboardLayout() {
                 <div className="p-8">
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="font-bold text-zinc-500 uppercase tracking-[0.2em] text-[10px]">{t('dashboard.activity')}</h3>
-                        <button className="text-zinc-600 hover:text-zinc-400 transition-colors">
+                        <button
+                            className="text-zinc-600 hover:text-zinc-400 transition-colors"
+                            aria-label={t('common.more')}
+                            title={t('common.more')}
+                        >
                             <MoreVertical size={16} />
                         </button>
                     </div>

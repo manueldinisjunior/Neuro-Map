@@ -148,8 +148,8 @@ export default function Dashboard() {
                                         {note.locked && <Lock size={16} className="text-zinc-600" />}
                                         <button
                                             className="text-zinc-600 hover:text-zinc-300 transition-colors"
-                                            aria-label="Options"
-                                            title="Options"
+                                            aria-label={t('common.more')}
+                                            title={t('common.more')}
                                         >
                                             <MoreHorizontal size={20} />
                                         </button>

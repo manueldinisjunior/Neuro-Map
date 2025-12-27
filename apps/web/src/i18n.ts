@@ -177,6 +177,11 @@ const resources = {
                     "title": "Generating Your Space",
                     "subtitle": "We're creating a custom mind map based on your selection."
                 }
+            },
+            "common": {
+                "more": "More options",
+                "notifications": "Notifications",
+                "profile": "User profile"
             }
         }
     },
@@ -354,6 +359,11 @@ const resources = {
                     "title": "Raum generieren",
                     "subtitle": "Wir erstellen eine benutzerdefinierte Mindmap basierend auf deiner Auswahl."
                 }
+            },
+            "common": {
+                "more": "Mehr Optionen",
+                "notifications": "Benachrichtigungen",
+                "profile": "Benutzerprofil"
             }
         }
     },
@@ -531,6 +541,11 @@ const resources = {
                     "title": "Gerando seu Espaço",
                     "subtitle": "Estamos criando um mapa mental personalizado com base na sua seleção."
                 }
+            },
+            "common": {
+                "more": "Mais opções",
+                "notifications": "Notificações",
+                "profile": "Perfil do usuário"
             }
         }
     },
@@ -708,6 +723,11 @@ const resources = {
                     "title": "Generando tu Espacio",
                     "subtitle": "Estamos creando un mapa mental personalizado basado en tu selección."
                 }
+            },
+            "common": {
+                "more": "Más opciones",
+                "notifications": "Notificaciones",
+                "profile": "Perfil de usuario"
             }
         }
     }
