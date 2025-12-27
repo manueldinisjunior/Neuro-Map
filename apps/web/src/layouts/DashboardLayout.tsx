@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { TranslationWidget } from '../components/TranslationWidget';
+import { useTopics } from '../context/TopicContext';
 
 import { Logo } from '../components/Logo';
 import { ThemeSwitcher } from '../components/ThemeSwitcher';
@@ -15,6 +16,7 @@ export function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
+    const { setIsCreateModalOpen } = useTopics();
 
     const handleLogout = () => {
         localStorage.removeItem('neuro_token');
@@ -88,6 +90,7 @@ export function DashboardLayout() {
 
                 <div className="p-4 border-t border-[var(--border-color)]">
                     <button
+                        onClick={() => setIsCreateModalOpen(true)}
                         className="w-full flex items-center gap-3 p-2.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-xl transition-all font-bold text-xs"
                     >
                         <Plus size={16} />

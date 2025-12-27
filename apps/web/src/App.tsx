@@ -9,12 +9,14 @@ import Login from './pages/Login';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import { ThemeProvider } from './context/ThemeContext';
+import { TopicProvider } from './context/TopicContext';
 import './App.css';
 
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <TopicProvider>
+        <BrowserRouter>
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
@@ -37,6 +39,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+    </TopicProvider>
     </ThemeProvider>
   );
 }

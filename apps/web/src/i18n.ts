@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 
 const resources = {
     en: {
@@ -195,7 +194,8 @@ const resources = {
             "common": {
                 "more": "More options",
                 "notifications": "Notifications",
-                "profile": "User profile"
+                "profile": "User profile",
+                "close": "Close"
             }
         }
     },
@@ -391,7 +391,8 @@ const resources = {
             "common": {
                 "more": "Mehr Optionen",
                 "notifications": "Benachrichtigungen",
-                "profile": "Benutzerprofil"
+                "profile": "Benutzerprofil",
+                "close": "Schließen"
             }
         }
     },
@@ -587,7 +588,8 @@ const resources = {
             "common": {
                 "more": "Mais opções",
                 "notifications": "Notificações",
-                "profile": "Perfil do usuário"
+                "profile": "Perfil do usuário",
+                "close": "Fechar"
             }
         }
     },
@@ -783,17 +785,18 @@ const resources = {
             "common": {
                 "more": "Más opciones",
                 "notifications": "Notificaciones",
-                "profile": "Perfil de usuario"
+                "profile": "Perfil de usuario",
+                "close": "Cerrar"
             }
         }
     }
 };
 
 i18n
-    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
+        lng: 'en',
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false
