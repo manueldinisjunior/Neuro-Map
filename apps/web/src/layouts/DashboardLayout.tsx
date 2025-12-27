@@ -8,6 +8,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { TranslationWidget } from '../components/TranslationWidget';
 
+import { Logo } from '../components/Logo';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
+
 export function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -33,14 +36,11 @@ export function DashboardLayout() {
     ];
 
     return (
-        <div className="h-screen bg-[#0d1b1e] flex overflow-hidden font-sans text-zinc-100">
+        <div className="h-screen bg-[var(--bg-primary)] flex overflow-hidden font-sans text-[var(--text-primary)]">
             {/* Left Sidebar */}
-            <aside className="w-64 bg-[#0d1b1e] border-r border-[#1a2e31] text-zinc-400 flex flex-col flex-shrink-0">
+            <aside className="w-64 bg-[var(--bg-primary)] border-r border-[var(--border-color)] text-[var(--text-secondary)] flex flex-col flex-shrink-0">
                 <div className="p-8 flex items-center gap-3">
-                    <Link to="/" className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 hover:scale-105 transition-transform" aria-label="Neuro Notes Home">
-                        <BrainCircuit size={22} />
-                    </Link>
-                    <span className="font-bold text-xl text-white tracking-tight">Neuro <span className="text-blue-500">Notes</span></span>
+                    <Logo />
                 </div>
 
                 <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
@@ -49,13 +49,13 @@ export function DashboardLayout() {
                             <Link
                                 key={item.label}
                                 to={item.path}
-                                className={`flex items-center justify-between px-3 py-2 rounded-lg transition-all ${location.pathname === item.path && item.label === 'Vista del grafico'
-                                    ? 'bg-[#1a2e31] text-white'
-                                    : 'hover:bg-[#1a2e31]/50 hover:text-white'
+                                className={`flex items-center justify-between px-3 py-2 rounded-lg transition-all ${location.pathname === item.path
+                                    ? 'bg-[var(--bg-secondary)] text-[var(--accent-primary)]'
+                                    : 'hover:bg-[var(--bg-secondary)]/50 hover:text-[var(--text-primary)]'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <item.icon size={16} className={location.pathname === item.path && item.label === 'Vista del grafico' ? 'text-[#50b4c8]' : 'text-zinc-500'} />
+                                    <item.icon size={16} className={location.pathname === item.path ? 'text-[var(--accent-primary)]' : 'text-[var(--text-secondary)]'} />
                                     <span className="text-[13px] font-medium">{item.label}</span>
                                 </div>
                                 {item.badge && (
@@ -86,16 +86,16 @@ export function DashboardLayout() {
                     </div>
                 </nav>
 
-                <div className="p-4 border-t border-[#1a2e31]">
+                <div className="p-4 border-t border-[var(--border-color)]">
                     <button
-                        className="w-full flex items-center gap-3 p-2.5 text-zinc-400 hover:text-white hover:bg-zinc-800/30 rounded-xl transition-all font-bold text-xs"
+                        className="w-full flex items-center gap-3 p-2.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-xl transition-all font-bold text-xs"
                     >
                         <Plus size={16} />
                         <span>Create</span>
                     </button>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 p-2.5 text-zinc-500 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all font-bold text-xs mt-2"
+                        className="w-full flex items-center gap-3 p-2.5 text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all font-bold text-xs mt-2"
                     >
                         <LogOut size={16} />
                         <span>{t('nav.logout')}</span>
@@ -104,15 +104,16 @@ export function DashboardLayout() {
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#0d1b1e]">
+            <div className="flex-1 flex flex-col min-w-0 bg-[var(--bg-primary)]">
                 {/* Header - Transparent/Minimal as in the image */}
                 <header className="h-12 bg-transparent flex items-center justify-end px-6 flex-shrink-0 gap-4">
-                    <button className="text-zinc-500 hover:text-white transition-colors" title="Home"><Home size={18} /></button>
-                    <button className="text-zinc-500 hover:text-white transition-colors" title="Back"><ArrowLeft size={18} /></button>
-                    <button className="text-zinc-500 hover:text-white transition-colors" title="Forward"><ArrowRight size={18} /></button>
-                    <div className="h-4 w-px bg-zinc-800" />
-                    <button className="text-zinc-500 hover:text-white transition-colors" title="Split view"><LayoutGrid size={18} /></button>
-                    <button className="text-zinc-500 hover:text-white transition-colors" title="Search"><Search size={18} /></button>
+                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Home"><Home size={18} /></button>
+                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Back"><ArrowLeft size={18} /></button>
+                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Forward"><ArrowRight size={18} /></button>
+                    <div className="h-4 w-px bg-[var(--border-color)]" />
+                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Split view"><LayoutGrid size={18} /></button>
+                    <button className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Search"><Search size={18} /></button>
+                    <ThemeSwitcher />
                     <TranslationWidget />
                 </header>
 
@@ -126,17 +127,17 @@ export function DashboardLayout() {
 
             {/* Top Right Context Menu - Similar to the small box in the image */}
             <div className="absolute top-4 right-6 pointer-events-none">
-                <div className="bg-[#1a2e31]/80 backdrop-blur-md border border-[#ffffff10] rounded-lg p-3 w-40 pointer-events-auto shadow-2xl">
+                <div className="bg-[var(--bg-secondary)]/80 backdrop-blur-md border border-[var(--border-color)] rounded-lg p-3 w-40 pointer-events-auto shadow-2xl">
                     <div className="space-y-3">
-                        <div className="flex items-center justify-between text-[11px] font-medium text-zinc-300 hover:text-white cursor-pointer group">
+                        <div className="flex items-center justify-between text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer group">
                             <span>Nodes</span>
                             <ChevronDown size={12} className="group-hover:translate-y-0.5 transition-transform" />
                         </div>
-                        <div className="flex items-center justify-between text-[11px] font-medium text-zinc-300 hover:text-white cursor-pointer group">
+                        <div className="flex items-center justify-between text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer group">
                             <span>Search</span>
                             <ChevronDown size={12} className="group-hover:translate-y-0.5 transition-transform" />
                         </div>
-                        <div className="flex items-center justify-between text-[11px] font-medium text-zinc-300 hover:text-white cursor-pointer group">
+                        <div className="flex items-center justify-between text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer group">
                             <span>Export</span>
                             <ChevronDown size={12} className="group-hover:translate-y-0.5 transition-transform" />
                         </div>

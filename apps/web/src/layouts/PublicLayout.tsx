@@ -3,6 +3,8 @@ import { BrainCircuit, Twitter, Github, Linkedin, Mail } from 'lucide-react';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { TranslationWidget } from '../components/TranslationWidget';
 import { useTranslation } from 'react-i18next';
+import { Logo } from '../components/Logo';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
 
 export function PublicLayout() {
     const { t } = useTranslation();
@@ -11,14 +13,7 @@ export function PublicLayout() {
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-blue-500/30">
             <header className="sticky top-0 z-50 bg-zinc-950/70 backdrop-blur-xl border-b border-zinc-900/50">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 group" aria-label="Neuro Notes Home">
-                        <div className="p-2 bg-blue-600 rounded-xl text-white group-hover:bg-blue-500 transition-all group-hover:shadow-lg group-hover:shadow-blue-600/20 active:scale-95 shadow-md">
-                            <BrainCircuit size={24} />
-                        </div>
-                        <span className="text-xl font-black uppercase tracking-tighter text-white">
-                            Neuro
-                        </span>
-                    </Link>
+                    <Logo />
 
                     <nav className="hidden md:flex items-center gap-10">
                         <Link to="/" className="text-[13px] font-bold uppercase tracking-widest text-zinc-500 hover:text-blue-500 transition-colors">
@@ -36,6 +31,7 @@ export function PublicLayout() {
                     </nav>
 
                     <div className="flex items-center gap-6">
+                        <ThemeSwitcher />
                         <TranslationWidget />
                         <Link
                             to="/login"
@@ -57,14 +53,11 @@ export function PublicLayout() {
                 <Outlet />
             </main>
 
-            <footer className="bg-zinc-950 text-zinc-500 py-20 border-t border-zinc-900">
+            <footer className="bg-[var(--bg-primary)] text-[var(--text-secondary)] py-20 border-t border-[var(--border-color)]">
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col md:flex-row justify-between items-start gap-12">
                         <div className="flex flex-col gap-6">
-                            <div className="flex items-center gap-2" aria-label="Neuro Notes Logo" role="img">
-                                <BrainCircuit size={28} className="text-blue-500" />
-                                <span className="font-black text-2xl text-white uppercase tracking-tighter">Neuro</span>
-                            </div>
+                            <Logo iconSize={28} textSize="text-2xl" />
                             <p className="max-w-xs text-sm leading-relaxed font-medium">
                                 {t('hero.subtitle')}
                             </p>
