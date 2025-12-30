@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import {
     Search, Bell, ChevronRight, ChevronDown, Plus,
     X, MoreHorizontal, MessageSquare, Tag, Maximize2,
     Minus, ZoomIn, ZoomOut, User, LayoutGrid, Brain, Clock,
     Sparkles, ShieldAlert, BarChart3, Info, Globe, Moon, Star,
-    Edit2, Trash2, Settings, ExternalLink
+    Edit2, Trash2, Settings, ExternalLink, BrainCircuit
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,6 +16,7 @@ interface TreeItem {
     children?: TreeItem[];
     count?: number;
     active?: boolean;
+    archived?: boolean;
 }
 
 const TREE_DATA: TreeItem[] = [
@@ -212,6 +213,21 @@ const DEFAULT_CATEGORIES = [
     { id: 'tech', label: 'Technology', color: '#3b82f6', icon: 'zap' }
 ];
 
+const CATEGORIES_DATA = [
+    { id: 'cat-0', label: 'Education & Learning', color: '#10b981', notesCount: 15, wordsSum: 2500, lastActive: '2024-05-15T10:00:00Z' },
+    { id: 'cat-1', label: 'Professional Skills', color: '#8b5cf6', notesCount: 22, wordsSum: 4800, lastActive: '2024-05-14T08:30:00Z' },
+    { id: 'cat-2', label: 'Science & Research', color: '#3b82f6', notesCount: 10, wordsSum: 3200, lastActive: '2024-05-16T15:45:00Z' },
+    { id: 'cat-3', label: 'Technology', color: '#0ea5e9', notesCount: 30, wordsSum: 8500, lastActive: '2024-05-17T12:00:00Z' },
+    { id: 'cat-4', label: 'Creativity', color: '#f43f5e', notesCount: 8, wordsSum: 1500, lastActive: '2024-05-10T09:00:00Z' },
+    { id: 'cat-5', label: 'Productivity', color: '#f59e0b', notesCount: 18, wordsSum: 4200, lastActive: '2024-05-15T11:20:00Z' },
+    { id: 'cat-6', label: 'Philosophy', color: '#10b981', notesCount: 12, wordsSum: 3000, lastActive: '2024-05-12T14:00:00Z' },
+    { id: 'cat-7', label: 'Psychology', color: '#8b5cf6', notesCount: 9, wordsSum: 2100, lastActive: '2024-05-13T16:30:00Z' },
+    { id: 'cat-8', label: 'Business', color: '#3b82f6', notesCount: 7, wordsSum: 1800, lastActive: '2024-05-11T10:00:00Z' },
+    { id: 'cat-9', label: 'Health', color: '#0ea5e9', notesCount: 6, wordsSum: 1200, lastActive: '2024-05-09T08:00:00Z' },
+    { id: 'cat-10', label: 'Languages', color: '#f43f5e', notesCount: 11, wordsSum: 2800, lastActive: '2024-05-14T12:00:00Z' },
+    { id: 'cat-11', label: 'Art', color: '#f59e0b', notesCount: 5, wordsSum: 900, lastActive: '2024-05-08T07:00:00Z' }
+];
+
 const BUBBLES = [
     { label: 'Philosophy', size: 140, color: 'from-emerald-400 to-teal-500', top: '15%', left: '45%', count: null },
     { label: 'Psychology', size: 120, color: 'from-indigo-500 to-purple-600', top: '40%', left: '70%', count: 12 },
@@ -242,13 +258,26 @@ export default function GraphWorkspace() {
     const [formContent, setFormContent] = useState('');
     const [formCategory, setFormCategory] = useState('');
 
+    const [newCatLabel, setNewCatLabel] = useState('');
+    const [newCatColor, setNewCatColor] = useState('#3b82f6');
+    const [newTopicLabel, setNewTopicLabel] = useState('');
+    const [currentCatIndex, setCurrentCatIndex] = useState(0);
+
     const containerRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<any>(null);
 
     useEffect(() => {
         // Mock onboarding check
         const hasCompletedOnboarding = localStorage.getItem('neuro_onboarded');
-        if (hasCompletedOnboarding) setIsOnboarded(true);
+        if (hasCompletedOnboarding) {
+            setIsOnboarded(true);
+            const savedData = localStorage.getItem('neuro_data');
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                setTreeData(parsed.tree || []);
+                setGraphData(parsed.graph || { nodes: [], links: [] });
+            }
+        }
     }, []);
 
     const completeOnboarding = () => {
@@ -434,38 +463,49 @@ export default function GraphWorkspace() {
     const isInsightsReady = USER_DATA.categoriesCount >= 10 && USER_DATA.subcategoriesCount >= 5;
 
     return (
-        <div className="flex h-screen w-full bg-[#f8fafc] text-[#1e293b] font-sans selection:bg-blue-100 selection:text-blue-700 overflow-hidden">
+        <div className="flex h-screen w-full bg-[#f1f5f9] text-[#1e293b] font-sans selection:bg-blue-100 selection:text-blue-700 overflow-hidden">
             {/* Sidebar Left */}
-            <aside className="w-80 border-r border-slate-200 flex flex-col bg-white/80 backdrop-blur-xl z-20">
+            <aside className="w-80 border-r border-[#e2e8f0] flex flex-col bg-white z-20">
+                {/* Logo Section */}
+                <div className="p-6 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#3b82f6] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                        <Brain size={24} />
+                    </div>
+                    <span className="font-extrabold text-xl tracking-tight text-[#1e293b]">Neuro Map</span>
+                </div>
+
                 {/* Search */}
-                <div className="p-6">
+                <div className="px-6 mb-6">
                     <div className="relative group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Search your knowledge..."
-                            className="w-full pl-10 pr-4 py-2.5 bg-slate-800/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all outline-none text-slate-700 placeholder:text-slate-400 font-medium"
+                            className="w-full pl-11 pr-4 py-3 bg-[#eef2f6] border-none rounded-2xl text-sm focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-slate-700 placeholder:text-slate-400 font-bold"
                         />
                     </div>
                 </div>
 
-                {/* Tree View */}
+                {/* Tree View Header */}
                 <div className="px-6 py-2">
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-6 flex items-center justify-between">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4">
                         KNOWLEDGE NAVIGATION <span className="text-[8px] font-bold text-slate-300">(LAWFUL)</span>
                     </h3>
                 </div>
 
                 <nav className="flex-1 overflow-y-auto px-4 scrollbar-none pb-20">
                     <div className="space-y-4">
-                        {treeData.map(section => (
+                        {treeData.filter(section => !section.archived).map(section => (
                             <div key={section.id} className="space-y-1">
-                                <div className="flex items-center justify-between px-2 mb-2">
-                                    <span className="text-[10px] font-bold text-slate-400">{section.label}</span>
-                                    <button title="Add Sub-category" aria-label="Add Sub-category" className="text-slate-300 hover:text-slate-500"><Plus size={12} /></button>
+                                <div className="flex items-center justify-between px-3 mb-2">
+                                    <span className="text-[11px] font-black text-slate-800 uppercase tracking-wider">{section.label}</span>
+                                    <Plus size={12} className="text-slate-300 cursor-pointer hover:text-blue-500" onClick={() => {
+                                        setIsNoteModalOpen(true);
+                                        setFormCategory(section.id);
+                                    }} />
                                 </div>
-                                {section.children?.map(item => (
-                                    <TreeItem key={item.id} item={item} depth={0} onDelete={handleDeleteNode} />
+                                {section.children?.filter(item => !item.archived).map(item => (
+                                    <TreeItem key={item.id} item={item} depth={0} onAction={handleAction} />
                                 ))}
                             </div>
                         ))}
@@ -473,12 +513,12 @@ export default function GraphWorkspace() {
                 </nav>
 
                 {/* Footer Sidebar */}
-                <div className="p-4 bg-white/50 border-t border-slate-100">
+                <div className="p-6 bg-white border-t border-slate-100">
                     <button
                         title="Create New Topic"
                         aria-label="Create New Topic"
                         onClick={() => setIsNoteModalOpen(true)}
-                        className="w-full bg-blue-500 text-white py-3.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-xl shadow-blue-500/20 active:scale-95 font-bold text-sm"
+                        className="w-full bg-[#3b82f6] text-white py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-xl shadow-blue-500/20 active:scale-95 font-black uppercase tracking-widest text-[11px]"
                     >
                         <Plus size={18} aria-hidden="true" />
                         New Topic
@@ -487,263 +527,579 @@ export default function GraphWorkspace() {
             </aside>
 
             {/* Main Area */}
-            <main className="flex-1 flex flex-col relative overflow-hidden bg-[#eff3f8]">
+            <main className="flex-1 flex flex-col relative overflow-hidden bg-[#f1f5f9] neuro-grid">
                 {/* Top Header */}
-                <header className="h-20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-10 border-b border-slate-100 z-30">
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-2xl shadow-blue-500/40">
-                            <Globe size={24} />
+                <header className="h-20 flex items-center justify-between px-10 z-30">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#3b82f6] rounded-xl flex items-center justify-center text-white">
+                            <BrainCircuit size={24} />
                         </div>
-                        <span className="font-black text-2xl tracking-tighter text-slate-800">Neuro Map</span>
+                        <span className="font-extrabold text-2xl tracking-tighter text-[#1e293b]">Neuro Map</span>
                     </div>
 
-                    <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-1">
+                    {/* Central Tab Nav */}
+                    <div className="flex bg-[#e2e8f0]/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/50 shadow-sm">
                         {['Dashboard', 'Notes', 'Graph View'].map(tab => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab.toLowerCase())}
-                                title={`Switch to ${tab}`}
-                                aria-label={`Switch to ${tab}`}
-                                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab.toLowerCase() ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                                className={`px-8 py-2.5 rounded-xl text-sm font-black tracking-tight transition-all ${activeTab === tab.toLowerCase() ? 'bg-[#3b82f6] text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'}`}
                             >
                                 {tab}
                             </button>
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-4 pr-6 border-r border-slate-200">
-                            <button title="History" aria-label="History" className="text-slate-400 hover:text-blue-500 transition-colors"><Clock size={20} /></button>
-                            <button title="Favorites" aria-label="Favorites" className="text-slate-400 hover:text-amber-500 transition-colors"><Star size={20} /></button>
-                            <button title="Dark Mode" aria-label="Toggle Dark Mode" className="text-slate-400 hover:text-indigo-500 transition-colors"><Moon size={20} /></button>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                            <Clock size={16} className="text-slate-400" />
+                            <span className="text-xs font-black text-slate-800">0</span>
+                            <Moon size={16} className="text-slate-400 ml-1" />
                         </div>
                         <button
+                            className="w-10 h-10 bg-[#3b82f6] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20"
                             title="Notifications"
                             aria-label="Notifications"
-                            className="relative w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors"
                         >
-                            <Bell size={20} />
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold">2</div>
+                            <Bell size={20} aria-hidden="true" />
                         </button>
-                        <div className="w-10 h-10 rounded-full border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform overflow-hidden bg-slate-200">
-                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Alex`} alt="User" />
-                        </div>
                     </div>
                 </header>
 
                 {/* Content */}
                 <div className="flex-1 flex flex-col relative" ref={containerRef}>
                     {!isOnboarded ? (
-                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xl">
+                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xl p-6">
+                            {/* Onboarding UI omitted for brevity in replace, keep current if possible - but I must provide full content for the range */}
                             <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-white p-12 rounded-[40px] shadow-2xl max-w-lg text-center"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="bg-white p-10 rounded-[40px] shadow-2xl max-w-2xl w-full text-center relative overflow-hidden"
                             >
-                                <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white mx-auto mb-8 shadow-2xl shadow-blue-500/30">
-                                    <Brain size={40} />
+                                <div className="absolute top-0 left-0 w-full h-2 bg-slate-100">
+                                    <motion.div
+                                        className="h-full bg-blue-600"
+                                        initial={{ width: '0%' }}
+                                        animate={{ width: `${(onboardingStep / 2) * 100}%` }}
+                                    />
                                 </div>
-                                <h2 className="text-3xl font-black text-slate-800 mb-4">Welcome to Neuro Map</h2>
-                                <p className="text-slate-500 font-medium mb-10 leading-relaxed">
-                                    Let's build your knowledge network. Add your first topic to begin visualizing your intellectual growth.
-                                </p>
-                                <div className="space-y-4">
-                                    <button
-                                        onClick={completeOnboarding}
-                                        title="Start Mapping"
-                                        aria-label="Start Mapping"
-                                        className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
-                                    >
-                                        Start Mapping
-                                    </button>
-                                </div>
+
+                                {onboardingStep === 0 && (
+                                    <div className="py-6">
+                                        <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white mx-auto mb-8 shadow-2xl shadow-blue-500/30">
+                                            <Brain size={40} />
+                                        </div>
+                                        <h2 className="text-3xl font-black text-slate-800 mb-4">Welcome to Neuro Map</h2>
+                                        <p className="text-slate-500 font-medium mb-10 leading-relaxed px-10">
+                                            Neuro Map is a visualization of your intellectual growth. Let's start by defining your primary areas of focus.
+                                        </p>
+                                        <button
+                                            onClick={() => setOnboardingStep(1)}
+                                            className="px-12 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20"
+                                        >
+                                            Get Started
+                                        </button>
+                                    </div>
+                                )}
+
+                                {onboardingStep === 1 && (
+                                    <div className="py-4 text-left">
+                                        <h2 className="text-2xl font-black text-slate-800 mb-2">Define your Pillars</h2>
+                                        <p className="text-slate-400 text-sm mb-8 font-bold uppercase tracking-widest">Step 1: Categories</p>
+
+                                        <div className="flex gap-2 mb-8">
+                                            <input
+                                                type="text"
+                                                value={newCatLabel}
+                                                onChange={(e) => setNewCatLabel(e.target.value)}
+                                                placeholder="e.g. Philosophy, Tech..."
+                                                className="flex-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20"
+                                            />
+                                            <input
+                                                type="color"
+                                                title="Choose category color"
+                                                aria-label="Choose category color"
+                                                value={newCatColor}
+                                                onChange={(e) => setNewCatColor(e.target.value)}
+                                                className="w-16 h-14 rounded-2xl border-none cursor-pointer p-0 overflow-hidden"
+                                            />
+                                            <button
+                                                title="Add Category"
+                                                aria-label="Add Category"
+                                                onClick={() => {
+                                                    if (newCatLabel) {
+                                                        setOnboardingCategories([...onboardingCategories, { label: newCatLabel, color: newCatColor, topics: [] }]);
+                                                        setNewCatLabel('');
+                                                    }
+                                                }}
+                                                className="px-6 bg-slate-800 text-white rounded-2xl hover:bg-black transition-colors"
+                                            >
+                                                <Plus size={20} aria-hidden="true" />
+                                            </button>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-3 mb-10 min-h-[100px] p-4 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                                            {onboardingCategories.map((cat, i) => (
+                                                <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-bold text-sm dynamic-bg" style={{ '--bg-color': cat.color } as React.CSSProperties}>
+                                                    {cat.label}
+                                                    <button
+                                                        title="Remove Category"
+                                                        aria-label="Remove Category"
+                                                        onClick={() => setOnboardingCategories(onboardingCategories.filter((_, idx) => idx !== i))}
+                                                    >
+                                                        <X size={14} aria-hidden="true" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {onboardingCategories.length === 0 && <p className="text-slate-300 italic text-sm m-auto">Add at least one category to proceed</p>}
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <button onClick={() => setOnboardingStep(0)} className="text-slate-400 font-bold hover:text-slate-600">Back</button>
+                                            <button
+                                                disabled={onboardingCategories.length === 0}
+                                                onClick={() => setOnboardingStep(2)}
+                                                className="px-10 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-blue-700 disabled:opacity-50"
+                                            >
+                                                Connect Topics
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {onboardingStep === 2 && (
+                                    <div className="py-4 text-left">
+                                        <h2 className="text-2xl font-black text-slate-800 mb-2">Populate Topics</h2>
+                                        <p className="text-slate-400 text-sm mb-6 font-bold uppercase tracking-widest">Step 2: Subjects for {onboardingCategories[currentCatIndex]?.label}</p>
+
+                                        <div className="flex gap-2 mb-6">
+                                            <input
+                                                type="text"
+                                                value={newTopicLabel}
+                                                onChange={(e) => setNewTopicLabel(e.target.value)}
+                                                placeholder={`Add topic to ${onboardingCategories[currentCatIndex]?.label}...`}
+                                                className="flex-1 px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && newTopicLabel) {
+                                                        const newCats = [...onboardingCategories];
+                                                        newCats[currentCatIndex].topics.push(newTopicLabel);
+                                                        setOnboardingCategories(newCats);
+                                                        setNewTopicLabel('');
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    if (newTopicLabel) {
+                                                        const newCats = [...onboardingCategories];
+                                                        newCats[currentCatIndex].topics.push(newTopicLabel);
+                                                        setOnboardingCategories(newCats);
+                                                        setNewTopicLabel('');
+                                                    }
+                                                }}
+                                                className="px-6 bg-slate-800 text-white rounded-2xl"
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+
+                                        <div className="space-y-2 mb-10 max-h-40 overflow-y-auto pr-2 scrollbar-none">
+                                            {onboardingCategories[currentCatIndex]?.topics.map((topic, i) => (
+                                                <div key={i} className="flex items-center justify-between p-3 bg-slate-100 rounded-xl">
+                                                    <span className="text-sm font-bold text-slate-700">{topic}</span>
+                                                    <button
+                                                        title="Remove Topic"
+                                                        aria-label="Remove Topic"
+                                                        onClick={() => {
+                                                            const newCats = [...onboardingCategories];
+                                                            newCats[currentCatIndex].topics = newCats[currentCatIndex].topics.filter((_, idx) => idx !== i);
+                                                            setOnboardingCategories(newCats);
+                                                        }}
+                                                    >
+                                                        <X size={14} className="text-slate-400" aria-hidden="true" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex gap-2">
+                                                {onboardingCategories.map((_, i) => (
+                                                    <button
+                                                        key={i}
+                                                        title={`Go to category ${i + 1}`}
+                                                        aria-label={`Go to category ${i + 1}`}
+                                                        onClick={() => setCurrentCatIndex(i)}
+                                                        className={`w-3 h-3 rounded-full transition-all ${currentCatIndex === i ? 'bg-blue-600 w-6' : 'bg-slate-200'}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <button onClick={() => setOnboardingStep(1)} className="text-slate-400 font-bold hover:text-slate-600">Back</button>
+                                                <button
+                                                    onClick={completeOnboarding}
+                                                    className="px-10 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-blue-500/20"
+                                                >
+                                                    Finalize Map
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </motion.div>
                         </div>
                     ) : (
-                        <>
-                            {/* Breadcrumbs simplified away to match image centered tabs */}
-                            {/* Graph Canvas */}
-                            <div className="flex-1 relative overflow-hidden graph-background">
-                                <ForceGraph2D
-                                    ref={graphRef}
-                                    width={dimensions.width}
-                                    height={dimensions.height}
-                                    graphData={graphData}
-                                    nodeRelSize={12}
-                                    nodeVal={node => (node as any).size}
-                                    nodeColor={node => (node as any).color}
-                                    linkColor={() => 'rgba(148, 163, 184, 0.2)'}
-                                    linkWidth={2}
-                                    backgroundColor="transparent"
-                                    onNodeClick={(node) => setSelectedTopic((node as any).label)}
-                                    nodeCanvasObject={(node: any, ctx, globalScale) => {
-                                        const label = node.label;
-                                        const size = (node.size || 20) * (selectedTopic === label ? 1.2 : 1);
-                                        const isSelected = selectedTopic === label;
+                        <div className="flex-1 h-full flex flex-col min-h-0">
+                            {activeTab === 'dashboard' && (
+                                <div className="flex-1 overflow-y-auto p-10 scrollbar-none space-y-12">
 
-                                        // Glow/Shadow side
-                                        ctx.shadowBlur = isSelected ? 30 / globalScale : 15 / globalScale;
-                                        ctx.shadowColor = node.color;
+                                    {/* Quick Stats Header */}
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                        {[
+                                            { label: 'Total Notes', value: '124', icon: MessageSquare, color: 'bg-blue-500' },
+                                            { label: 'Knowledge Areas', value: '12', icon: LayoutGrid, color: 'bg-emerald-500' },
+                                            { label: 'Learning Streak', value: '14 Days', icon: Sparkles, color: 'bg-purple-500' },
+                                            { label: 'Mastery Score', value: '82%', icon: Brain, color: 'bg-amber-500' }
+                                        ].map((stat, i) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: i * 0.1 }}
+                                                className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer group"
+                                            >
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
+                                                        <stat.icon size={22} />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{stat.label}</p>
+                                                        <p className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                                                    <div className={`h-full ${stat.color} opacity-30 w-2/3 rounded-full`} />
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
 
-                                        // 3D Sphere Effect
-                                        const gradient = ctx.createRadialGradient(
-                                            node.x - size / 3,
-                                            node.y - size / 3,
-                                            size / 10,
-                                            node.x,
-                                            node.y,
-                                            size
-                                        );
-                                        gradient.addColorStop(0, '#fff');
-                                        gradient.addColorStop(0.3, node.color);
-                                        gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+                                    {/* Main Dashboard Section */}
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                                        {/* Recent Knowledge / Notes */}
+                                        <div className="lg:col-span-2 space-y-10">
+                                            {/* Category Mastery Bars */}
+                                            <div className="bg-white/40 backdrop-blur-md p-10 rounded-[40px] border border-white/50 shadow-xl">
+                                                <div className="flex items-center justify-between mb-8">
+                                                    <h3 className="text-xl font-black text-slate-800 tracking-tight">Category Mastery</h3>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-3 h-3 rounded-full bg-blue-500" />
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Learning</span>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                                    {CATEGORIES_DATA.map((cat, i) => (
+                                                        <div key={cat.id} className="space-y-3">
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="w-2 h-2 rounded-full dynamic-bg" style={{ '--bg-color': cat.color } as React.CSSProperties} />
+                                                                    <span className="text-xs font-bold text-slate-700">{cat.label}</span>
+                                                                </div>
+                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{60 + (i * 10)}%</span>
+                                                            </div>
+                                                            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                                <motion.div
+                                                                    initial={{ width: 0 }}
+                                                                    animate={{ width: `${60 + (i * 10)}%` }}
+                                                                    transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
+                                                                    style={{ '--bg-color': cat.color } as React.CSSProperties}
+                                                                    className="h-full rounded-full dynamic-bg"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
 
-                                        ctx.beginPath();
-                                        ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
-                                        ctx.fillStyle = gradient;
-                                        ctx.fill();
+                                            <div className="space-y-6">
+                                                <div className="flex items-center justify-between">
+                                                    <h3 className="text-xl font-black text-slate-800 tracking-tight">Recent Insights</h3>
+                                                    <button className="text-xs font-black text-blue-600 uppercase tracking-widest hover:underline">View All</button>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    {CATEGORIES_DATA.slice(0, 4).map((note, i) => (
+                                                        <motion.div
+                                                            key={i}
+                                                            initial={{ opacity: 0, scale: 0.95 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            transition={{ delay: 0.7 + i * 0.1 }}
+                                                            className="bg-white p-8 rounded-[36px] border border-slate-100 hover:border-blue-200 transition-all hover:shadow-2xl hover:shadow-blue-500/5 group cursor-pointer relative overflow-hidden shadow-sm"
+                                                        >
+                                                            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-110 transition-transform">
+                                                                <Sparkles size={40} className="text-blue-600" />
+                                                            </div>
+                                                            <div className="flex items-center gap-2 mb-4">
+                                                                <div className="w-2 h-2 rounded-full dynamic-bg" style={{ '--bg-color': note.color } as React.CSSProperties} />
+                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{note.label}</span>
+                                                            </div>
+                                                            <h4 className="text-lg font-black text-slate-800 mb-3 tracking-tight group-hover:text-blue-600 transition-colors">
+                                                                Understanding {note.label.split(' ')[0]} in Deep Context
+                                                            </h4>
+                                                            <p className="text-sm text-slate-500 leading-relaxed line-clamp-3 mb-6 font-medium">
+                                                                Your recent focus on this area shows a high correlation with previous concepts in Tech. Consider exploring the link between these elements for better retention.
+                                                            </p>
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex -space-x-2">
+                                                                    {[1, 2, 3].map(j => (
+                                                                        <div key={j} className="w-6 h-6 rounded-full border-2 border-white bg-slate-200" />
+                                                                    ))}
+                                                                </div>
+                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Added 2h ago</span>
+                                                            </div>
+                                                        </motion.div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        // Inner light shine
-                                        ctx.beginPath();
-                                        ctx.arc(node.x - size / 3, node.y - size / 3, size / 4, 0, 2 * Math.PI, false);
-                                        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-                                        ctx.fill();
+                                        {/* Pinned & Recommended */}
+                                        <div className="space-y-6">
+                                            <h3 className="text-xl font-black text-slate-800 tracking-tight">Recommended for You</h3>
+                                            <div className="space-y-4">
+                                                {[
+                                                    { title: 'Neural Network Basics', area: 'Technology', color: 'text-blue-500' },
+                                                    { title: 'Stoic Principles', area: 'Philosophy', color: 'text-emerald-500' },
+                                                    { title: 'UI Design Patterns', area: 'Design', color: 'text-pink-500' }
+                                                ].map((item, i) => (
+                                                    <div key={i} className="bg-slate-50 p-6 rounded-[28px] border border-slate-100 hover:bg-white hover:shadow-xl transition-all cursor-pointer group">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className={`text-[9px] font-black uppercase tracking-widest ${item.color}`}>{item.area}</span>
+                                                            <Plus size={14} className="text-slate-300 group-hover:text-blue-500" />
+                                                        </div>
+                                                        <h5 className="font-black text-slate-800 group-hover:text-blue-600 transition-colors">{item.title}</h5>
+                                                    </div>
+                                                ))}
+                                            </div>
 
-                                        // Label Callout (similar to image)
-                                        if (globalScale > 0.4) {
-                                            const fontSize = 14 / globalScale;
-                                            ctx.font = `${isSelected ? '800' : '600'} ${fontSize}px Inter, sans-serif`;
-                                            const textWidth = ctx.measureText(label).width;
-                                            const padding = 10 / globalScale;
-
-                                            // Callout box
-                                            const bx = node.x - textWidth / 2 - padding;
-                                            const by = node.y + size + 15 / globalScale;
-                                            const bw = textWidth + padding * 2;
-                                            const bh = fontSize + padding * 1.5;
-                                            const r = 12 / globalScale;
-
-                                            ctx.shadowBlur = 10 / globalScale;
-                                            ctx.shadowColor = 'rgba(0,0,0,0.1)';
-                                            ctx.fillStyle = isSelected ? '#3b82f6' : 'white';
-
-                                            // Triangle tail
-                                            ctx.beginPath();
-                                            ctx.moveTo(node.x, node.y + size + 5 / globalScale);
-                                            ctx.lineTo(node.x - 6 / globalScale, by);
-                                            ctx.lineTo(node.x + 6 / globalScale, by);
-                                            ctx.fill();
-
-                                            // Rounded rect
-                                            ctx.beginPath();
-                                            ctx.roundRect(bx, by, bw, bh, r);
-                                            ctx.fill();
-
-                                            // Text
-                                            ctx.shadowBlur = 0;
-                                            ctx.textAlign = 'center';
-                                            ctx.textBaseline = 'middle';
-                                            ctx.fillStyle = isSelected ? 'white' : '#1e293b';
-                                            ctx.fillText(label, node.x, by + bh / 2);
-
-                                            if (isSelected) {
-                                                const subText = "11 Notes • React Native";
-                                                const subSize = 8 / globalScale;
-                                                ctx.font = `600 ${subSize}px Inter, sans-serif`;
-                                                ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                                                ctx.fillText(subText, node.x, by + bh + 12 / globalScale);
-
-                                                // Drawing small interactive icons for map-based edit/delete
-                                                // Note: Actual logic would involve hit-testing in a real app, 
-                                                // but for this visual mock we show the UI presence.
-                                                const iconSize = 10 / globalScale;
-                                                ctx.fillStyle = 'white';
-                                                ctx.beginPath();
-                                                ctx.roundRect(bx + bw + 10 / globalScale, by, bh, bh, r / 2);
-                                                ctx.fill();
-                                                ctx.fillStyle = '#ef4444'; // trash red
-                                                ctx.fillText('×', bx + bw + 10 / globalScale + bh / 2, by + bh / 2);
-
-                                                ctx.fillStyle = 'white';
-                                                ctx.beginPath();
-                                                ctx.roundRect(bx + bw + 10 / globalScale + bh + 5 / globalScale, by, bh, bh, r / 2);
-                                                ctx.fill();
-                                                ctx.fillStyle = '#3b82f6'; // edit blue
-                                                ctx.fillText('✎', bx + bw + 10 / globalScale + bh + 5 / globalScale + bh / 2, by + bh / 2);
-                                            }
-                                        }
-                                    }}
-                                />
-
-                                {/* Control Bar (Bottom Center) */}
-                                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl p-2 rounded-2xl border border-white shadow-2xl flex items-center gap-2">
-                                    <button title="Zoom In" aria-label="Zoom In" onClick={handleZoomIn} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Plus size={18} aria-hidden="true" /></button>
-                                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
-                                    <button title="Zoom Out" aria-label="Zoom Out" onClick={handleZoomOut} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Minus size={18} aria-hidden="true" /></button>
-                                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
-                                    <button title="Reset View" aria-label="Reset View" onClick={handleCenter} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Maximize2 size={18} aria-hidden="true" /></button>
+                                            <div className="mt-10 p-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-[36px] text-white shadow-2xl relative overflow-hidden group">
+                                                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                                                    <Brain size={80} />
+                                                </div>
+                                                <h4 className="text-lg font-black mb-2 tracking-tight">Deep Work Mode</h4>
+                                                <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">
+                                                    Unlock focused learning sessions with custom timers and background soundscapes.
+                                                </p>
+                                                <button className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-50 transition-colors">Start Session</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            )}
 
-                                <button
-                                    title="Add New Topic"
-                                    aria-label="Add New Topic"
-                                    onClick={() => setIsNoteModalOpen(true)}
-                                    className="absolute bottom-10 left-10 w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all"
-                                >
-                                    <Plus size={24} aria-hidden="true" />
-                                </button>
-                            </div>
-                        </>
+                            {activeTab === 'notes' && (
+                                <div className="flex-1 p-10 overflow-y-auto scrollbar-none">
+                                    <div className="max-w-4xl mx-auto space-y-8">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h2 className="text-3xl font-black text-slate-800 tracking-tight underline decoration-blue-500 decoration-8 underline-offset-4">Your Knowledge Notes</h2>
+                                            <button onClick={() => setIsNoteModalOpen(true)} className="px-6 py-3 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/20">Add New Note</button>
+                                        </div>
+                                        <div className="space-y-4">
+                                            {CATEGORIES_DATA.map((note, i) => (
+                                                <motion.div
+                                                    key={i}
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: i * 0.05 }}
+                                                    className="flex items-center gap-6 p-6 bg-white rounded-3xl border border-slate-50 hover:border-blue-100 hover:shadow-xl transition-all cursor-pointer group"
+                                                >
+                                                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black dynamic-bg" style={{ '--bg-color': note.color } as React.CSSProperties}>
+                                                        {note.label[0]}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="text-lg font-black text-slate-800 group-hover:text-blue-600 transition-colors">{note.label} Summary</h4>
+                                                        <p className="text-sm text-slate-400 font-medium">Last updated 14 days ago • {note.notesCount} items linked</p>
+                                                    </div>
+                                                    <button
+                                                        title="More Options"
+                                                        aria-label="More Options"
+                                                        className="w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-all"
+                                                    >
+                                                        <MoreHorizontal size={20} aria-hidden="true" />
+                                                    </button>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'graph view' && (
+                                <div className="flex-1 relative overflow-hidden graph-background">
+                                    <ForceGraph2D
+                                        ref={graphRef}
+                                        width={dimensions.width}
+                                        height={dimensions.height}
+                                        graphData={graphData}
+                                        nodeRelSize={12}
+                                        nodeVal={node => (node as any).size}
+                                        nodeColor={node => (node as any).color}
+                                        linkColor={() => 'rgba(148, 163, 184, 0.2)'}
+                                        linkWidth={2}
+                                        backgroundColor="transparent"
+                                        onNodeClick={(node) => setSelectedTopic((node as any).label)}
+                                        nodeCanvasObject={(node: any, ctx, globalScale) => {
+                                            const label = node.label;
+                                            const size = (node.size || 20) * (selectedTopic === label ? 1.2 : 1);
+                                            const isSelected = selectedTopic === label;
+
+                                            // Glow/Shadow side
+                                            ctx.shadowBlur = isSelected ? 30 / globalScale : 15 / globalScale;
+                                            ctx.shadowColor = node.color;
+
+                                            // 3D Sphere Effect
+                                            const gradient = ctx.createRadialGradient(
+                                                node.x - size / 3,
+                                                node.y - size / 3,
+                                                size / 10,
+                                                node.x,
+                                                node.y,
+                                                size
+                                            );
+                                            gradient.addColorStop(0, '#fff');
+                                            gradient.addColorStop(0.3, node.color);
+                                            gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+
+                                            ctx.beginPath();
+                                            ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
+                                            ctx.fillStyle = gradient;
+                                            ctx.fill();
+
+                                            // Inner light shine
+                                            ctx.beginPath();
+                                            ctx.arc(node.x - size / 3, node.y - size / 3, size / 4, 0, 2 * Math.PI, false);
+                                            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                                            ctx.fill();
+
+                                            // Label Callout (similar to image)
+                                            if (globalScale > 0.4) {
+                                                const fontSize = 14 / globalScale;
+                                                ctx.font = `${isSelected ? '800' : '600'} ${fontSize}px Inter, sans-serif`;
+                                                const textWidth = ctx.measureText(label).width;
+                                                const padding = 10 / globalScale;
+
+                                                // Callout box
+                                                const bx = node.x - textWidth / 2 - padding;
+                                                const by = node.y + size + 15 / globalScale;
+                                                const bw = textWidth + padding * 2;
+                                                const bh = fontSize + padding * 1.5;
+                                                const r = 12 / globalScale;
+
+                                                ctx.shadowBlur = 10 / globalScale;
+                                                ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                                                ctx.fillStyle = isSelected ? '#3b82f6' : 'white';
+
+                                                // Triangle tail
+                                                ctx.beginPath();
+                                                ctx.moveTo(node.x, node.y + size + 5 / globalScale);
+                                                ctx.lineTo(node.x - 6 / globalScale, by);
+                                                ctx.lineTo(node.x + 6 / globalScale, by);
+                                                ctx.fill();
+
+                                                // Rounded rect
+                                                ctx.beginPath();
+                                                ctx.roundRect(bx, by, bw, bh, r);
+                                                ctx.fill();
+
+                                                // Text
+                                                ctx.shadowBlur = 0;
+                                                ctx.textAlign = 'center';
+                                                ctx.textBaseline = 'middle';
+                                                ctx.fillStyle = isSelected ? 'white' : '#1e293b';
+                                                ctx.fillText(label, node.x, by + bh / 2);
+
+                                                if (isSelected) {
+                                                    const subText = "12 Notes • Mastered";
+                                                    const subSize = 9 / globalScale;
+                                                    ctx.font = `700 ${subSize}px Inter, sans-serif`;
+                                                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                                                    ctx.fillText(subText, node.x, by + bh + 14 / globalScale);
+
+                                                    // Glow effect for selected node
+                                                    ctx.beginPath();
+                                                    ctx.arc(node.x, node.y, size * 1.5, 0, 2 * Math.PI, false);
+                                                    const gradient = ctx.createRadialGradient(node.x, node.y, size, node.x, node.y, size * 1.5);
+                                                    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+                                                    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+                                                    ctx.fillStyle = gradient;
+                                                    ctx.fill();
+                                                }
+                                            }
+                                        }}
+                                    />
+
+                                    {/* Control Bar (Bottom Center) */}
+                                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl p-2 rounded-2xl border border-white shadow-2xl flex items-center gap-2">
+                                        <button title="Zoom In" aria-label="Zoom In" onClick={handleZoomIn} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Plus size={18} aria-hidden="true" /></button>
+                                        <div className="w-px h-6 bg-slate-200 mx-1"></div>
+                                        <button title="Zoom Out" aria-label="Zoom Out" onClick={handleZoomOut} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Minus size={18} aria-hidden="true" /></button>
+                                        <div className="w-px h-6 bg-slate-200 mx-1"></div>
+                                        <button title="Reset View" aria-label="Reset View" onClick={handleCenter} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Maximize2 size={18} aria-hidden="true" /></button>
+                                    </div>
+
+                                    <button
+                                        title="Add New Topic"
+                                        aria-label="Add New Topic"
+                                        onClick={() => setIsNoteModalOpen(true)}
+                                        className="absolute bottom-10 left-10 w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all"
+                                    >
+                                        <Plus size={24} aria-hidden="true" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
             </main>
 
             {/* Sidebar Right */}
-            <aside className="w-96 border-l border-slate-200 flex flex-col bg-white">
-                <div className="p-8 flex flex-col h-full overflow-y-auto scrollbar-none">
+            <aside className="w-[420px] border-l border-[#e2e8f0] flex flex-col bg-white">
+                <div className="p-10 flex flex-col h-full overflow-y-auto scrollbar-none">
                     {!selectedTopic ? (
                         <>
                             {/* Profile & Insights Header */}
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                        <User size={18} />
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-[#eef2f6] flex items-center justify-center text-slate-800 border border-[#e2e8f0]">
+                                        <User size={20} />
                                     </div>
-                                    <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Profile & Insights</h2>
+                                    <h2 className="text-xs font-black text-slate-800 uppercase tracking-[0.15em]">Profile & Insights</h2>
                                 </div>
-                                {isInsightsReady && (
-                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100">
-                                        <Sparkles size={12} />
-                                        <span>Insights Ready</span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-2 px-4 py-1.5 bg-[#f0fdf4] text-[#16a34a] rounded-full text-[10px] font-black border border-[#dcfce7] shadow-sm">
+                                    <Sparkles size={12} />
+                                    <span>Insights Ready</span>
+                                </div>
                             </div>
 
                             {/* Top Categories */}
-                            <section className="mb-10">
-                                <h3 className="text-sm font-bold text-slate-800 mb-6 flex items-center justify-between">
-                                    Top Knowledge Categories
-                                    <BarChart3 size={14} className="text-slate-400" />
-                                </h3>
-                                <div className="space-y-6">
+                            <section className="mb-12">
+                                <h3 className="text-sm font-black text-[#1e293b] mb-8 uppercase tracking-tight">Top Knowledge Categories</h3>
+                                <div className="space-y-7">
                                     {rankedCategories.map((cat, idx) => (
                                         <div key={cat.id} className="group">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-6 h-6 rounded flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: cat.color }}>
-                                                        {idx + 1}
-                                                    </div>
-                                                    <span className="text-xs font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{cat.label}</span>
+                                            <div className="flex items-center gap-4 mb-2.5">
+                                                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-[11px] font-black shadow-sm dynamic-bg" style={{ '--bg-color': cat.color } as React.CSSProperties}>
+                                                    {idx}
                                                 </div>
-                                                <span className="text-xs font-black text-slate-800">{cat.notesCount}</span>
+                                                <span className="text-[13px] font-bold text-slate-700 flex-1">{cat.label}</span>
+                                                <span className="text-[13px] font-black text-slate-900">{cat.notesCount}</span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                            <div className="h-1.5 w-full bg-[#f1f5f9] rounded-full overflow-hidden">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${(cat.notesCount / rankedCategories[0].notesCount) * 100}%` }}
-                                                    transition={{ duration: 1, delay: idx * 0.1 }}
-                                                    className="h-full rounded-full"
-                                                    style={{ backgroundColor: cat.color, opacity: 0.6 }}
+                                                    transition={{ duration: 1.2, ease: "circOut", delay: idx * 0.05 }}
+                                                    style={{ '--bg-color': cat.color } as React.CSSProperties}
+                                                    className="h-full rounded-full dynamic-bg"
                                                 />
                                             </div>
                                         </div>
@@ -752,94 +1108,46 @@ export default function GraphWorkspace() {
                             </section>
 
                             {/* Time on App */}
-                            <section className="mb-10 p-6 bg-slate-50 border border-slate-100 rounded-[24px]">
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <Clock size={14} />
-                                    Time on Neuro Map
-                                </h3>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Member Since:</span>
-                                        <span className="text-slate-800 font-bold">{timeMetrics.memberSince}</span>
+                            <section className="mb-12">
+                                <h3 className="text-xs font-black text-slate-800 uppercase tracking-[0.15em] mb-6">Time on Neuro Map</h3>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-bold text-slate-400">Member Since:</span>
+                                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">{timeMetrics.memberSince}</span>
                                     </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Days Active:</span>
-                                        <span className="text-slate-800 font-bold">{timeMetrics.daysActive}</span>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-bold text-slate-400">Days Active:</span>
+                                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">{timeMetrics.daysActive}</span>
                                     </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Last Activity:</span>
-                                        <span className="text-slate-800 font-bold">{timeMetrics.lastActivity}</span>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-bold text-slate-400">Last Activity:</span>
+                                        <span className="text-xs font-black text-slate-700 uppercase tracking-tight">{timeMetrics.lastActivity}</span>
                                     </div>
                                 </div>
                             </section>
 
                             {/* Behavioral Snapshot */}
-                            <section>
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                                        <Brain size={16} className="text-blue-500" />
-                                        Behavioral Snapshot
-                                        <span className="text-[9px] text-slate-400 normal-case font-medium ml-1">(Non-clinical)</span>
-                                    </h3>
-                                    {!isInsightsReady && <Info size={14} className="text-slate-300" />}
-                                </div>
+                            <section className="mt-auto">
+                                <h3 className="text-xs font-black text-slate-800 uppercase tracking-[0.15em] mb-6 flex items-center justify-between">
+                                    <span>Behavioral Snapshot</span>
+                                    <span className="text-[10px] text-slate-400 normal-case font-bold">(Non-clinical)</span>
+                                </h3>
 
-                                {isInsightsReady ? (
-                                    <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-[24px] relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-                                            <Sparkles size={40} className="text-blue-600" />
-                                        </div>
-                                        <p className="text-xs text-slate-600 leading-relaxed font-medium mb-4 relative z-10">
-                                            Your activity suggests a strong preference for <span className="text-blue-600 font-bold">structured learning and analytical problem-solving</span>, with sustained attention in Tech & Digital Topics. You also show consistent self-improvement orientation through Productivity & Education modules.
-                                        </p>
-                                        <div className="flex flex-col gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-white/40 mb-4">
-                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tendency Hypothesis</p>
-                                            <p className="text-[11px] text-slate-700 font-bold">Convergent Thinker / Intellectual Depth</p>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div className="flex items-start gap-2 text-[10px] text-slate-400 italic">
-                                                <ShieldAlert size={12} className="shrink-0 mt-0.5" />
-                                                <p>This is not a diagnosis. For higher accuracy, consider taking a validated personality assessment like the Big Five (IPIP).</p>
+                                <div className="p-7 bg-[#f8fafc] border border-[#e2e8f0] rounded-[32px] relative overflow-hidden">
+                                    <p className="text-[13px] text-slate-600 leading-relaxed font-bold">
+                                        Your activity suggests a strong preference for structured learning and analytical problem-solving, with sustained atenton in Technology & Digital Topics and Science & Research. You also show consistent self-
+                                    </p>
+                                    <div className="mt-8 flex -space-x-2">
+                                        {[...Array(4)].map((_, i) => (
+                                            <div key={i} className="w-10 h-10 rounded-full border-[3px] border-white overflow-hidden bg-slate-200 shadow-sm">
+                                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`} alt="user" />
                                             </div>
-                                            <button title="Take Big Five Assessment" aria-label="Take Big Five Assessment" className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-50 transition-colors shadow-sm">
-                                                Take Big Five Assessment
-                                            </button>
+                                        ))}
+                                        <div className="w-10 h-10 rounded-full border-[3px] border-white bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500 shadow-sm">
+                                            +12
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className="p-6 bg-slate-50 border border-slate-100 border-dashed rounded-[24px]">
-                                        <p className="text-xs font-bold text-slate-500 mb-4">Not enough data yet for a snapshot</p>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
-                                                    <span>Categories</span>
-                                                    <span>{USER_DATA.categoriesCount}/10</span>
-                                                </div>
-                                                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-slate-400 rounded-full"
-                                                        style={{ width: `${(USER_DATA.categoriesCount / 10) * 100}%` }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
-                                                    <span>Subcategories</span>
-                                                    <span>{USER_DATA.subcategoriesCount}/5</span>
-                                                </div>
-                                                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-slate-400 rounded-full"
-                                                        style={{ width: `${(USER_DATA.subcategoriesCount / 5) * 100}%` }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className="text-[10px] text-slate-400 mt-4 leading-relaxed">
-                                            Continue organizing your knowledge to unlock behavioral tendencies and cognitive breadth insights.
-                                        </p>
-                                    </div>
-                                )}
+                                </div>
                             </section>
                         </>
                     ) : (
@@ -981,21 +1289,24 @@ export default function GraphWorkspace() {
 
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-800 mb-2">Category</label>
+                                            <label htmlFor="category-select" className="block text-sm font-bold text-slate-800 mb-2">Category</label>
                                             <select
+                                                id="category-select"
+                                                title="Select Category"
                                                 value={formCategory}
                                                 onChange={(e) => setFormCategory(e.target.value)}
                                                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all font-medium appearance-none cursor-pointer"
                                             >
-                                                {CATEGORIES_DATA.map(cat => (
+                                                {treeData.map(cat => (
                                                     <option key={cat.id} value={cat.id}>{cat.label}</option>
                                                 ))}
                                             </select>
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-800 mb-2">Topic</label>
+                                            <label htmlFor="topic-input" className="block text-sm font-bold text-slate-800 mb-2">Topic</label>
                                             <input
+                                                id="topic-input"
                                                 type="text"
                                                 value={formTopic}
                                                 onChange={(e) => setFormTopic(e.target.value)}
@@ -1005,8 +1316,9 @@ export default function GraphWorkspace() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-800 mb-2">Title <span className="text-slate-400 font-medium">(Optional)</span></label>
+                                            <label htmlFor="title-input" className="block text-sm font-bold text-slate-800 mb-2">Title <span className="text-slate-400 font-medium">(Optional)</span></label>
                                             <input
+                                                id="title-input"
                                                 type="text"
                                                 value={formTitle}
                                                 onChange={(e) => setFormTitle(e.target.value)}
@@ -1016,8 +1328,9 @@ export default function GraphWorkspace() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-800 mb-2">Content</label>
+                                            <label htmlFor="content-textarea" className="block text-sm font-bold text-slate-800 mb-2">Content</label>
                                             <textarea
+                                                id="content-textarea"
                                                 rows={6}
                                                 value={formContent}
                                                 onChange={(e) => setFormContent(e.target.value)}
@@ -1123,7 +1436,11 @@ export default function GraphWorkspace() {
     );
 }
 
-function TreeItem({ item, depth, onDelete }: { item: any, depth: number, onDelete: (id: string, type: any) => void }) {
+function TreeItem({ item, depth, onAction }: {
+    item: TreeItem,
+    depth: number,
+    onAction: (id: string, type: 'topic' | 'category', action: 'delete' | 'archive' | 'rename', newLabel?: string) => void
+}) {
     const [isExpanded, setIsExpanded] = useState(item.expanded || false);
     const hasChildren = item.children && item.children.length > 0;
 
@@ -1131,22 +1448,51 @@ function TreeItem({ item, depth, onDelete }: { item: any, depth: number, onDelet
         <div className="space-y-1">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`group flex items-center justify-between px-2 py-2 hover:bg-slate-50 rounded-xl transition-all cursor-pointer ${item.active ? 'bg-blue-50 text-blue-600' : ''}`}
+                className={`group flex items-center justify-between px-3 py-2.5 rounded-xl transition-all cursor-pointer ${item.active ? 'bg-[#3b82f6] text-white shadow-lg shadow-blue-500/20' : 'hover:bg-slate-50 text-slate-600'}`}
             >
                 <div className="flex items-center gap-3">
                     {hasChildren ? (
                         <motion.div animate={{ rotate: isExpanded ? 0 : -90 }}>
-                            <ChevronDown size={14} className="text-slate-400" />
+                            <ChevronDown size={14} className={item.active ? 'text-white/80' : 'text-slate-400'} />
                         </motion.div>
                     ) : (
-                        <ChevronRight size={14} className="text-blue-300" />
+                        <div className={`w-1 h-1 rounded-full ${item.active ? 'bg-white/80' : 'bg-blue-300'} ml-1.5 mr-1`} />
                     )}
-                    <span className={`text-sm font-semibold ${item.active ? 'text-blue-600' : 'text-slate-600'}`}>{item.label}</span>
+                    <span className={`text-sm font-bold tracking-tight ${item.active ? 'text-white' : 'text-slate-700'}`}>{item.label}</span>
                 </div>
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button title="Edit" aria-label="Edit" className="p-1 hover:text-blue-500 text-slate-300 transition-colors"><Edit2 size={12} /></button>
-                    <button title="Delete" aria-label="Delete" onClick={(e) => { e.stopPropagation(); onDelete(item.id, 'topic'); }} className="p-1 hover:text-red-500 text-slate-300 transition-colors"><Trash2 size={12} /></button>
-                    {item.count && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-lg text-[10px] font-bold">{item.count}</span>}
+                    <button
+                        title="Rename"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const val = prompt('New name:', item.label);
+                            if (val) onAction(item.id, 'topic', 'rename', val);
+                        }}
+                        className="p-1 hover:text-blue-500 text-slate-300 transition-colors"
+                    >
+                        <Edit2 size={12} />
+                    </button>
+                    <button
+                        title="Archive"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onAction(item.id, 'topic', 'archive');
+                        }}
+                        className="p-1 hover:text-amber-500 text-slate-300 transition-colors"
+                    >
+                        <ShieldAlert size={12} />
+                    </button>
+                    <button
+                        title="Delete"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onAction(item.id, 'topic', 'delete');
+                        }}
+                        className="p-1 hover:text-red-500 text-slate-300 transition-colors"
+                    >
+                        <Trash2 size={12} />
+                    </button>
+                    {item.count !== undefined && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-lg text-[10px] font-bold">{item.count}</span>}
                 </div>
             </div>
 
@@ -1158,8 +1504,8 @@ function TreeItem({ item, depth, onDelete }: { item: any, depth: number, onDelet
                         exit={{ height: 0, opacity: 0 }}
                         className="ml-4 border-l-2 border-slate-100 pl-2 space-y-1 overflow-hidden"
                     >
-                        {item.children.map((child: any) => (
-                            <TreeItem key={child.id} item={child} depth={depth + 1} onDelete={onDelete} />
+                        {item.children!.filter(c => !c.archived).map((child: TreeItem) => (
+                            <TreeItem key={child.id} item={child} depth={depth + 1} onAction={onAction} />
                         ))}
                     </motion.div>
                 )}

@@ -169,9 +169,9 @@ body {
     /* Center the dots */
   }
 
-  .graph-background {
-    background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-    background-size: 24px 24px;
+  .neuro-grid {
+    background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 
   .legend-text {
@@ -181,5 +181,17 @@ body {
     font-size: 10px;
     color: #64748b;
     /* slate-500 */
+  }
+
+  .dynamic-bg {
+    background-color: var(--bg-color);
+  }
+
+  .dynamic-ml {
+    margin-left: var(--ml-value);
+  }
+
+  .dynamic-opacity {
+    opacity: var(--opacity-value);
   }
 }
