@@ -3,7 +3,8 @@ import ForceGraph2D from 'react-force-graph-2d';
 import {
     Search, Bell, ChevronRight, ChevronDown, Plus,
     X, MoreHorizontal, MessageSquare, Tag, Maximize2,
-    Minus, ZoomIn, ZoomOut, User, LayoutGrid
+    Minus, ZoomIn, ZoomOut, User, LayoutGrid, Brain, Clock, 
+    Sparkles, ShieldAlert, BarChart3, Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -73,6 +74,26 @@ const RECENT_NOTES = [
 
 const TAGS = ['frontend', 'javascript', 'architecture'];
 
+const USER_DATA = {
+    createdAt: '2024-04-15T10:00:00Z',
+    lastActiveAt: new Date().toISOString(),
+    daysActiveCount: 37,
+    categoriesCount: 12,
+    subcategoriesCount: 8
+};
+
+const CATEGORIES_DATA = [
+    { id: 'tech', label: 'Technology & Digital Topics', notesCount: 24, wordsSum: 1250, color: '#3b82f6', icon: 'zap', lastActive: '2025-12-30T10:00:00Z' },
+    { id: 'prof', label: 'Professional Skills', notesCount: 18, wordsSum: 900, color: '#8b5cf6', icon: 'briefcase', lastActive: '2025-12-29T15:00:00Z' },
+    { id: 'sci', label: 'Science & Research', notesCount: 15, wordsSum: 750, color: '#ec4899', icon: 'microscope', lastActive: '2025-12-28T09:00:00Z' },
+    { id: 'prod', label: 'Productivity & Methods', notesCount: 13, wordsSum: 400, color: '#f59e0b', icon: 'check-circle', lastActive: '2025-12-27T18:00:00Z' },
+    { id: 'edu', label: 'Education & Learning', notesCount: 12, wordsSum: 600, color: '#10b981', icon: 'book', lastActive: '2025-12-26T14:00:00Z' },
+    { id: 'lang', label: 'Languages & Communication', notesCount: 10, wordsSum: 500, color: '#f43f5e', icon: 'languages', lastActive: '2025-12-25T11:00:00Z' },
+    { id: 'proj', label: 'Projects & Work', notesCount: 9, wordsSum: 450, color: '#06b6d4', icon: 'folder', lastActive: '2025-12-24T16:00:00Z' },
+    { id: 'crea', label: 'Creativity & Culture', notesCount: 9, wordsSum: 300, color: '#6366f1', icon: 'palette', lastActive: '2025-12-23T10:00:00Z' },
+    { id: 'health', label: 'Health & Wellness', notesCount: 5, wordsSum: 200, color: '#10b981', icon: 'heart', lastActive: '2025-12-22T08:00:00Z' }
+];
+
 const BUBBLES = [
     { label: 'Philosophy', size: 140, color: 'from-emerald-400 to-teal-500', top: '15%', left: '45%', count: null },
     { label: 'Psychology', size: 120, color: 'from-indigo-500 to-purple-600', top: '40%', left: '70%', count: 12 },
@@ -86,7 +107,7 @@ const BUBBLES = [
 ];
 
 export default function GraphWorkspace() {
-    const [selectedTopic, setSelectedTopic] = useState('React Hooks');
+    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
@@ -110,6 +131,33 @@ export default function GraphWorkspace() {
     const handleZoomIn = () => graphRef.current?.zoom(graphRef.current.zoom() * 1.5, 400);
     const handleZoomOut = () => graphRef.current?.zoom(graphRef.current.zoom() * 0.7, 400);
     const handleCenter = () => graphRef.current?.centerAt(0, 0, 400);
+
+    // Profile & Insights Data Processing
+    const rankedCategories = useMemo(() => {
+        return [...CATEGORIES_DATA]
+            .map(cat => {
+                const recencyBonus = (new Date().getTime() - new Date(cat.lastActive).getTime()) < 2 * 24 * 60 * 60 * 1000 ? 5 : 0;
+                const activityScore = cat.notesCount + Math.floor(cat.wordsSum / 50) + recencyBonus;
+                return { ...cat, activityScore };
+            })
+            .sort((a, b) => b.activityScore - a.activityScore)
+            .slice(0, 8);
+    }, []);
+
+    const timeMetrics = useMemo(() => {
+        const signupDate = new Date(USER_DATA.createdAt);
+        const lastActive = new Date(USER_DATA.lastActiveAt);
+        const diffTime = Math.abs(new Date().getTime() - signupDate.getTime());
+        const daysSinceSignup = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return {
+            memberSince: signupDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+            daysActive: `${USER_DATA.daysActiveCount} days`,
+            lastActivity: '1 hour ago' // Relative time simplified for mock
+        };
+    }, []);
+
+    const isInsightsReady = USER_DATA.categoriesCount >= 10 && USER_DATA.subcategoriesCount >= 5;
 
     return (
         <div className="flex h-screen w-full bg-[#f8fafc] text-[#1e293b] font-sans selection:bg-blue-100 selection:text-blue-700 overflow-hidden">
@@ -337,85 +385,231 @@ export default function GraphWorkspace() {
             {/* Sidebar Right */}
             <aside className="w-96 border-l border-slate-200 flex flex-col bg-white">
                 <div className="p-8 flex flex-col h-full overflow-y-auto scrollbar-none">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Selected Topic</span>
-                        <button
-                            title="Close Details"
-                            aria-label="Close Details"
-                            className="text-slate-300 hover:text-slate-500 transition-colors"
-                        >
-                            <X size={20} aria-hidden="true" />
-                        </button>
-                    </div>
-
-                    <h2 className="text-2xl font-black text-slate-800 mb-1">{selectedTopic}</h2>
-                    <p className="text-sm text-slate-400 font-medium mb-10">Part of <span className="text-blue-500 font-bold">React Ecosystem</span></p>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-3 mb-10">
-                        {STATS.map(stat => (
-                            <div key={stat.label} className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
-                                <p className="text-xl font-black text-slate-800">{stat.value}</p>
-                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{stat.label}</p>
+                    {!selectedTopic ? (
+                        <>
+                            {/* Profile & Insights Header */}
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                        <User size={18} />
+                                    </div>
+                                    <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Profile & Insights</h2>
+                                </div>
+                                {isInsightsReady && (
+                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100">
+                                        <Sparkles size={12} />
+                                        <span>Insights Ready</span>
+                                    </div>
+                                )}
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Summary */}
-                    <div className="mb-10">
-                        <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Summary</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                            Hooks allow function components to have access to state and other React features. Because of this, class components are generally no longer needed.
-                        </p>
-                    </div>
+                            {/* Top Categories */}
+                            <section className="mb-10">
+                                <h3 className="text-sm font-bold text-slate-800 mb-6 flex items-center justify-between">
+                                    Top Knowledge Categories
+                                    <BarChart3 size={14} className="text-slate-400" />
+                                </h3>
+                                <div className="space-y-6">
+                                    {rankedCategories.map((cat, idx) => (
+                                        <div key={cat.id} className="group">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-6 h-6 rounded flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: cat.color }}>
+                                                        {idx + 1}
+                                                    </div>
+                                                    <span className="text-xs font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{cat.label}</span>
+                                                </div>
+                                                <span className="text-xs font-black text-slate-800">{cat.notesCount}</span>
+                                            </div>
+                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${(cat.notesCount / rankedCategories[0].notesCount) * 100}%` }}
+                                                    transition={{ duration: 1, delay: idx * 0.1 }}
+                                                    className="h-full rounded-full"
+                                                    style={{ backgroundColor: cat.color, opacity: 0.6 }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
 
-                    {/* Recent Notes */}
-                    <div className="mb-10">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Recent Notes</h3>
-                            <button className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">View All</button>
-                        </div>
-                        <div className="space-y-3">
-                            {RECENT_NOTES.map(note => (
-                                <div key={note.title} className="p-4 rounded-2xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-all group cursor-pointer">
-                                    <h4 className="text-sm font-bold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{note.title}</h4>
-                                    <p className="text-xs text-slate-500 line-clamp-2 mb-3 leading-relaxed">{note.excerpt}</p>
-                                    <div className="flex items-center gap-2 text-slate-300">
-                                        <MessageSquare size={12} />
-                                        <span className="text-[10px] font-bold">{note.time}</span>
+                            {/* Time on App */}
+                            <section className="mb-10 p-6 bg-slate-50 border border-slate-100 rounded-[24px]">
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <Clock size={14} />
+                                    Time on Neuro Map
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500 font-medium">Member Since:</span>
+                                        <span className="text-slate-800 font-bold">{timeMetrics.memberSince}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500 font-medium">Days Active:</span>
+                                        <span className="text-slate-800 font-bold">{timeMetrics.daysActive}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500 font-medium">Last Activity:</span>
+                                        <span className="text-slate-800 font-bold">{timeMetrics.lastActivity}</span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
+                            </section>
 
-                    {/* Linked Tags */}
-                    <div className="mb-10">
-                        <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Linked Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {TAGS.map(tag => (
-                                <span key={tag} className="px-3 py-1.5 bg-purple-50 text-purple-600 text-[10px] font-bold rounded-lg border border-purple-100">#{tag}</span>
-                            ))}
-                        </div>
-                    </div>
+                            {/* Behavioral Snapshot */}
+                            <section>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                        <Brain size={16} className="text-blue-500" />
+                                        Behavioral Snapshot
+                                        <span className="text-[9px] text-slate-400 normal-case font-medium ml-1">(Non-clinical)</span>
+                                    </h3>
+                                    {!isInsightsReady && <Info size={14} className="text-slate-300" />}
+                                </div>
 
-                    {/* Actions */}
-                    <div className="mt-auto pt-6 flex gap-3">
-                        <button
-                            onClick={() => setIsNoteModalOpen(true)}
-                            className="flex-1 bg-blue-500 text-white py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20 active:scale-95 font-bold text-sm"
-                        >
-                            <Plus size={18} />
-                            Add Note
-                        </button>
-                        <button
-                            title="More Actions"
-                            aria-label="More Actions"
-                            className="w-14 bg-slate-50 border border-slate-100 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-slate-100 hover:text-slate-600 transition-all active:scale-95"
-                        >
-                            <MoreHorizontal size={20} aria-hidden="true" />
-                        </button>
-                    </div>
+                                {isInsightsReady ? (
+                                    <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-[24px] relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                                            <Sparkles size={40} className="text-blue-600" />
+                                        </div>
+                                        <p className="text-xs text-slate-600 leading-relaxed font-medium mb-4 relative z-10">
+                                            Your activity suggests a strong preference for <span className="text-blue-600 font-bold">structured learning and analytical problem-solving</span>, with sustained attention in Tech & Digital Topics. You also show consistent self-improvement orientation through Productivity & Education modules.
+                                        </p>
+                                        <div className="flex flex-col gap-2 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-white/40 mb-4">
+                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tendency Hypothesis</p>
+                                            <p className="text-[11px] text-slate-700 font-bold">Convergent Thinker / Intellectual Depth</p>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="flex items-start gap-2 text-[10px] text-slate-400 italic">
+                                                <ShieldAlert size={12} className="shrink-0 mt-0.5" />
+                                                <p>This is not a diagnosis. For higher accuracy, consider taking a validated personality assessment like the Big Five (IPIP).</p>
+                                            </div>
+                                            <button className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-50 transition-colors shadow-sm">
+                                                Take Big Five Assessment
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="p-6 bg-slate-50 border border-slate-100 border-dashed rounded-[24px]">
+                                        <p className="text-xs font-bold text-slate-500 mb-4">Not enough data yet for a snapshot</p>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
+                                                    <span>Categories</span>
+                                                    <span>{USER_DATA.categoriesCount}/10</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                                    <div 
+                                                        className="h-full bg-slate-400 rounded-full" 
+                                                        style={{ width: `${(USER_DATA.categoriesCount / 10) * 100}%` }} 
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
+                                                    <span>Subcategories</span>
+                                                    <span>{USER_DATA.subcategoriesCount}/5</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                                    <div 
+                                                        className="h-full bg-slate-400 rounded-full" 
+                                                        style={{ width: `${(USER_DATA.subcategoriesCount / 5) * 100}%` }} 
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 mt-4 leading-relaxed">
+                                            Continue organizing your knowledge to unlock behavioral tendencies and cognitive breadth insights.
+                                        </p>
+                                    </div>
+                                )}
+                            </section>
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Selected Topic</span>
+                                <button
+                                    onClick={() => setSelectedTopic(null)}
+                                    title="Close Details"
+                                    aria-label="Close Details"
+                                    className="text-slate-300 hover:text-slate-500 transition-colors"
+                                >
+                                    <X size={20} aria-hidden="true" />
+                                </button>
+                            </div>
+
+                            <h2 className="text-2xl font-black text-slate-800 mb-1">{selectedTopic}</h2>
+                            <p className="text-sm text-slate-400 font-medium mb-10">Part of <span className="text-blue-500 font-bold">React Ecosystem</span></p>
+
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-3 gap-3 mb-10">
+                                {STATS.map(stat => (
+                                    <div key={stat.label} className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center">
+                                        <p className="text-xl font-black text-slate-800">{stat.value}</p>
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{stat.label}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Summary */}
+                            <div className="mb-10">
+                                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Summary</h3>
+                                <p className="text-sm text-slate-500 leading-relaxed font-medium">
+                                    Hooks allow function components to have access to state and other React features. Because of this, class components are generally no longer needed.
+                                </p>
+                            </div>
+
+                            {/* Recent Notes */}
+                            <div className="mb-10">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Recent Notes</h3>
+                                    <button className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">View All</button>
+                                </div>
+                                <div className="space-y-3">
+                                    {RECENT_NOTES.map(note => (
+                                        <div key={note.title} className="p-4 rounded-2xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-all group cursor-pointer">
+                                            <h4 className="text-sm font-bold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{note.title}</h4>
+                                            <p className="text-xs text-slate-500 line-clamp-2 mb-3 leading-relaxed">{note.excerpt}</p>
+                                            <div className="flex items-center gap-2 text-slate-300">
+                                                <MessageSquare size={12} />
+                                                <span className="text-[10px] font-bold">{note.time}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Linked Tags */}
+                            <div className="mb-10">
+                                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Linked Tags</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {TAGS.map(tag => (
+                                        <span key={tag} className="px-3 py-1.5 bg-purple-50 text-purple-600 text-[10px] font-bold rounded-lg border border-purple-100">#{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="mt-auto pt-6 flex gap-3">
+                                <button
+                                    onClick={() => setIsNoteModalOpen(true)}
+                                    className="flex-1 bg-blue-500 text-white py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20 active:scale-95 font-bold text-sm"
+                                >
+                                    <Plus size={18} />
+                                    Add Note
+                                </button>
+                                <button
+                                    title="More Actions"
+                                    aria-label="More Actions"
+                                    className="w-14 bg-slate-50 border border-slate-100 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-slate-100 hover:text-slate-600 transition-all active:scale-95"
+                                >
+                                    <MoreHorizontal size={20} aria-hidden="true" />
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </aside>
 
