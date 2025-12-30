@@ -148,7 +148,11 @@ export function DashboardLayout() {
 
                             <div className="p-6 border-t border-slate-50 bg-slate-50/30">
                                 <button
-                                    onClick={() => setIsCreateModalOpen(true)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setIsCreateModalOpen(true);
+                                    }}
                                     className="w-full bg-slate-900 text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-slate-900/10 active:scale-95"
                                 >
                                     <Plus size={16} />

@@ -51,7 +51,7 @@ export function Modal({
             {isOpen && (
                 <div
                     ref={overlayRef}
-                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/30 backdrop-blur-sm"
                     onClick={handleOverlayClick}
                     aria-modal="true"
                     role="dialog"

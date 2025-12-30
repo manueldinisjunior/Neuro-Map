@@ -12,7 +12,7 @@ interface NewTopicModalProps {
 }
 
 // Simulated API Call
-const createNoteApi = async (data: { topic: string; title: string; content: string }) => {
+const createNoteApi = async (data: { topic: string; title: string; content: string; categoryId?: string }) => {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -35,7 +35,23 @@ const createNoteApi = async (data: { topic: string; title: string; content: stri
     };
 
     // Mutate the array (in-memory persistence for demo)
-    TREE_DATA.push(newTreeItem);
+    if (data.categoryId) {
+        // Add to existing category
+        const parent = TREE_DATA.find(c => c.id === data.categoryId);
+        if (parent) {
+            if (!parent.children) parent.children = [];
+            parent.children.push(newTreeItem);
+
+            // Should we expand the parent?
+            parent.expanded = true;
+        } else {
+            // Fallback to root if not found
+            TREE_DATA.push(newTreeItem);
+        }
+    } else {
+        // Add as new top-level
+        TREE_DATA.push(newTreeItem);
+    }
 
     // 2. Add the Note content
     if (data.title || data.content) {
@@ -43,7 +59,8 @@ const createNoteApi = async (data: { topic: string; title: string; content: stri
             id: newNoteId,
             title: data.title || data.topic,
             content: data.content,
-            category: data.topic,
+            // Use the category label if found, global lookup or passed down
+            category: data.categoryId ? TREE_DATA.find(c => c.id === data.categoryId)?.label || data.topic : data.topic,
             tags: ['User Created'],
             createdAt: new Date().toISOString(),
             color: '#8b5cf6'
@@ -58,6 +75,7 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
     const [topic, setTopic] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
     const { refreshGraph } = useTopics();
     const queryClient = useQueryClient();
@@ -68,6 +86,7 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
             setTopic('');
             setTitle('');
             setContent('');
+            setSelectedCategoryId('');
         }
     }, [isOpen]);
 
@@ -87,7 +106,7 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
         // "Validate: topicName required, content required" -> OK strict.
         if (!content.trim()) return;
 
-        mutation.mutate({ topic, title, content });
+        mutation.mutate({ topic, title, content, categoryId: selectedCategoryId });
     };
 
     // --- Graph Preview Logic (Simplified from CreateNoteModal) ---
@@ -184,6 +203,20 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
                 </div>
 
                 <div className="space-y-5 flex-1 overflow-y-auto scrollbar-none">
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Category</label>
+                        <select
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
+                            value={selectedCategoryId}
+                            onChange={(e) => setSelectedCategoryId(e.target.value)}
+                        >
+                            <option value="">Create New Category (Top Level)</option>
+                            {TREE_DATA.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.label}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Topic <span className="text-red-400">*</span></label>
                         <input
