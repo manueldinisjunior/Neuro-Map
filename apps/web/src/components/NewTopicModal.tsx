@@ -250,18 +250,20 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
                 </div>
 
                 <div className="flex-1 w-full h-full" ref={containerRef}>
-                    <ForceGraph2D
-                        ref={graphRef}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        graphData={graphData}
-                        nodeRelSize={6}
-                        nodeCanvasObject={nodeCanvasObject}
-                        linkColor={() => 'rgba(255,255,255,0.1)'}
-                        backgroundColor="transparent"
-                        d3VelocityDecay={0.4}
-                        cooldownTicks={100}
-                    />
+                    {isOpen && dimensions.width > 0 && (
+                        <ForceGraph2D
+                            ref={graphRef}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                            graphData={graphData}
+                            nodeRelSize={6}
+                            nodeCanvasObject={nodeCanvasObject}
+                            linkColor={() => 'rgba(255,255,255,0.1)'}
+                            backgroundColor="transparent"
+                            d3VelocityDecay={0.4}
+                            cooldownTicks={100}
+                        />
+                    )}
                 </div>
 
                 <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
