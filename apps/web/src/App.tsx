@@ -12,34 +12,39 @@ import { ThemeProvider } from './context/ThemeContext';
 import { TopicProvider } from './context/TopicContext';
 import './App.css';
 
+import GraphWorkspace from './pages/GraphWorkspace';
+
 function App() {
   return (
     <ThemeProvider>
       <TopicProvider>
         <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-          </Route>
+          <Routes>
+            {/* Public Routes */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+            </Route>
 
-          {/* Onboarding */}
-          <Route path="/onboarding" element={<Onboarding />} />
+            {/* Onboarding */}
+            <Route path="/onboarding" element={<Onboarding />} />
 
-          {/* Protected Routes (Mock protection for now) */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-          </Route>
+            {/* Workspace / Graph View (New UI) */}
+            <Route path="/workspace" element={<GraphWorkspace />} />
 
-          {/* Catch all redirect */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </TopicProvider>
+            {/* Protected Routes (Mock protection for now) */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+            </Route>
+
+            {/* Catch all redirect */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </TopicProvider>
     </ThemeProvider>
   );
 }
