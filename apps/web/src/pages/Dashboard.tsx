@@ -201,7 +201,7 @@ export default function Dashboard() {
                             <div className="space-y-5">
                                 {CATEGORIES_STATS.slice(0, 4).map((cat, i) => (
                                     <div key={i} className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-xs shadow-md dynamic-bg" style={{ '--bg-color': cat.color } as React.CSSProperties}>
+                                        <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center font-bold text-white text-xs shadow-md ${cat.colorClass}`}>
                                             {cat.label.substring(0, 2).toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -211,11 +211,7 @@ export default function Dashboard() {
                                             </div>
                                             <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
                                                 <div
-                                                    className="h-full rounded-full dynamic-bg dynamic-width opacity-80"
-                                                    style={{
-                                                        '--bg-color': cat.color,
-                                                        '--width-value': `${(cat.value / 25) * 100}%`
-                                                    } as React.CSSProperties}
+                                                    className={`h-full rounded-full opacity-80 ${cat.colorClass} ${cat.widthClass}`}
                                                 />
                                             </div>
                                         </div>

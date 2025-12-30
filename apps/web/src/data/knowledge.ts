@@ -62,11 +62,11 @@ export const TREE_DATA: TreeItem[] = [
 ];
 
 export const CATEGORIES_STATS = [
-    { label: 'Technology & Digital Topics', value: 24, color: '#22d3ee' },
-    { label: 'Professional Skills', value: 18, color: '#2dd4bf' },
-    { label: 'Science & Research', value: 15, color: '#3b82f6' },
-    { label: 'Productivity & Methods', value: 13, color: '#f59e0b' },
-    { label: 'Education & Learning', value: 12, color: '#f43f5e' }
+    { label: 'Technology & Digital Topics', value: 24, color: '#22d3ee', type: 'tech', colorClass: 'bg-cyan-400', widthClass: 'w-[96%]' },
+    { label: 'Professional Skills', value: 18, color: '#2dd4bf', type: 'skills', colorClass: 'bg-teal-400', widthClass: 'w-[72%]' },
+    { label: 'Science & Research', value: 15, color: '#3b82f6', type: 'research', colorClass: 'bg-blue-500', widthClass: 'w-[60%]' },
+    { label: 'Productivity & Methods', value: 13, color: '#f59e0b', type: 'ideas', colorClass: 'bg-amber-500', widthClass: 'w-[52%]' },
+    { label: 'Education & Learning', value: 12, color: '#f43f5e', type: 'creative', colorClass: 'bg-rose-500', widthClass: 'w-[48%]' }
 ];
 
 export const NOTES_DATA: Note[] = [

@@ -1,8 +1,8 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
-    Brain, Search, Bell, Globe, Moon, Clock, Plus,
+    Brain, Search, Bell, Moon, Clock, Plus,
     ChevronDown, ChevronRight, User, CheckCircle2,
-    BarChart3, Info, Maximize2, Menu
+    BarChart3, Info, LayoutDashboard, FileText, Share2, PanelLeftClose
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,7 +12,9 @@ import { TREE_DATA, CATEGORIES_STATS, type TreeItem } from '../data/knowledge';
 export function DashboardLayout() {
     const navigate = useNavigate();
     const location = useLocation();
-    const [activeTab, setActiveTab] = useState('dashboard');
+
+    // Toggle for sidebar visibility if needed, defaulting to true
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
 
     const handleLogout = () => {
         localStorage.removeItem('neuro_token');
@@ -20,207 +22,236 @@ export function DashboardLayout() {
     };
 
     return (
-        <div className="h-screen w-full bg-[#f8fafc] flex overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
-            {/* Left Sidebar: Knowledge Navigation (Premium Glassmorphic) */}
-            <aside className="w-80 bg-white border-r border-slate-100 flex flex-col flex-shrink-0 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-                <div className="p-8 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-xl shadow-blue-500/20">
-                        <Brain size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-black text-slate-800 tracking-tighter leading-none uppercase">MAXMUS</h1>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Cognitive OS</p>
-                    </div>
-                </div>
-
-                <div className="px-6 pb-4">
-                    <div className="relative group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
-                        <input
-                            type="text"
-                            placeholder="Search your knowledge..."
-                            className="w-full pl-10 pr-4 py-2.5 bg-slate-900/5 border-none rounded-xl text-xs focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all outline-none font-medium placeholder:text-slate-400"
-                        />
-                    </div>
-                </div>
-
-                <nav className="flex-1 px-4 space-y-6 overflow-y-auto scrollbar-none py-4">
-                    <div>
-                        <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Knowledge Navigation <span className="text-[9px] font-bold text-slate-300 ml-1">(Lawful)</span></p>
-                        <div className="space-y-1">
-                            {TREE_DATA.map(item => (
-                                <SidebarTreeItem key={item.id} item={item} />
-                            ))}
+        <div className="h-screen w-full bg-[#f8fafc] flex flex-col overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
+            {/* Double-Decker Header */}
+            <header className="flex-shrink-0 z-50 bg-white shadow-sm border-b border-slate-200 relative">
+                {/* Top Row: Branding & Utilities */}
+                <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform">
+                            <Brain size={24} />
+                        </div>
+                        <div className="hidden md:block">
+                            <h1 className="text-xl font-black text-slate-800 tracking-tighter leading-none uppercase">MAXMUS</h1>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Cognitive OS</p>
                         </div>
                     </div>
-                </nav>
 
-                <div className="p-6 border-t border-slate-50 bg-slate-50/30">
-                    <button className="w-full bg-blue-500 text-white py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 active:scale-95">
-                        <Plus size={18} />
-                        New Topic
-                    </button>
-                </div>
-            </aside>
-
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#eff3f8] relative overflow-hidden">
-                {/* Global Top Bar */}
-                <header className="h-20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-10 border-b border-slate-100 flex-shrink-0 z-40">
                     <div className="flex items-center gap-4">
-                        <button
-                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
-                            aria-label="Toggle menu"
-                            title="Toggle menu"
-                        >
-                            <Menu size={24} />
-                        </button>
-                    </div>
-
-                    <div className="flex bg-slate-100/80 p-1.5 rounded-2xl gap-1 border border-white">
-                        {['Dashboard', 'Notes', 'Mind Map'].map(tab => {
-                            const path = tab === 'Dashboard' ? '/dashboard' :
-                                tab === 'Notes' ? '/dashboard/notes' :
-                                    '/dashboard/mind-map';
-                            const isActive = location.pathname === path;
-
-                            return (
-                                <Link
-                                    key={tab}
-                                    to={path}
-                                    className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${isActive ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
-                                >
-                                    {tab}
-                                </Link>
-                            );
-                        })}
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-4 pr-6 border-r border-slate-200">
-                            <button title="History" className="text-slate-400 hover:text-blue-500 transition-colors"><Clock size={20} /></button>
-                            <span className="text-xs font-black text-slate-400">0</span>
-                            <button title="Dark Mode" className="text-slate-400 hover:text-indigo-500 transition-colors"><Moon size={20} /></button>
+                        <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-full border border-slate-100">
+                            <div className="px-3 py-1.5 flex items-center gap-2 text-slate-400">
+                                <Clock size={16} />
+                                <span className="text-xs font-black">0</span>
+                            </div>
+                            <button
+                                title="Toggle theme"
+                                aria-label="Toggle theme"
+                                className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors shadow-sm"
+                            >
+                                <Moon size={16} />
+                            </button>
                         </div>
+
                         <button
                             title="Notifications"
                             aria-label="View notifications"
-                            className="relative w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30"
+                            className="relative w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-colors"
                         >
                             <Bell size={20} />
                             <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold">2</div>
                         </button>
-                        <div className="w-10 h-10 rounded-full border-2 border-white shadow-md overflow-hidden bg-slate-200">
+
+                        <div className="w-10 h-10 rounded-full border-2 border-white shadow-md overflow-hidden bg-slate-200 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all">
                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User" />
                         </div>
                     </div>
-                </header>
+                </div>
 
-                <main className="flex-1 flex overflow-hidden">
-                    <div className="flex-1 overflow-hidden relative">
-                        <Outlet />
+                {/* Bottom Row: Search & Navigation */}
+                <div className="h-16 px-6 flex items-center justify-between bg-white/80 backdrop-blur-xl">
+                    <div className="flex items-center gap-4 w-1/3">
+                        <button
+                            onClick={() => setSidebarOpen(!isSidebarOpen)}
+                            className={`p-2 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors ${isSidebarOpen ? 'bg-slate-100 text-slate-600' : ''}`}
+                            aria-label="Toggle sidebar"
+                            title="Toggle sidebar"
+                        >
+                            <PanelLeftClose size={20} />
+                        </button>
+                        <div className="relative group flex-1 max-w-md">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
+                            <input
+                                type="text"
+                                placeholder="Search your knowledge..."
+                                className="w-full pl-10 pr-4 py-2.5 bg-slate-800 text-white placeholder:text-slate-400 border-none rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-slate-700 transition-all outline-none font-medium"
+                            />
+                        </div>
                     </div>
 
-                    {/* Right Sidebar: Profile & Insights (Part of Dashboard view usually, but image shows it here) */}
-                    {location.pathname === '/dashboard' && (
-                        <aside className="w-96 border-l border-slate-200 flex flex-col bg-white overflow-y-auto scrollbar-none p-8">
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                        <User size={18} />
-                                    </div>
-                                    <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Profile & Insights</h2>
-                                </div>
-                                <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100">
-                                    <CheckCircle2 size={12} />
-                                    <span>Insights Ready</span>
-                                </div>
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div className="flex items-center bg-slate-100 p-1 rounded-xl gap-1">
+                            {[
+                                { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+                                { id: 'notes', label: 'Notes', path: '/dashboard/notes', icon: FileText },
+                                { id: 'graph', label: 'Graph View', path: '/dashboard/mind-map', icon: Share2 } // Updated label
+                            ].map(tab => {
+                                const isActive = location.pathname === tab.path;
+                                const Icon = tab.icon;
+                                return (
+                                    <Link
+                                        key={tab.id}
+                                        to={tab.path}
+                                        className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all ${isActive
+                                            ? 'bg-blue-600 text-white shadow-md'
+                                            : 'text-slate-500 hover:text-slate-700 hover:bg-white'
+                                            }`}
+                                    >
+                                        <Icon size={14} />
+                                        {tab.label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="w-1/3"></div> {/* Spacer to balance flex layout */}
+                </div>
+            </header>
+
+            {/* Main Content Area with Sidebar */}
+            <div className="flex-1 flex overflow-hidden">
+                {/* Left Sidebar: Knowledge Navigation (Now simpler) */}
+                <AnimatePresence mode="wait">
+                    {isSidebarOpen && (
+                        <motion.aside
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: 320, opacity: 1 }}
+                            exit={{ width: 0, opacity: 0 }}
+                            className="bg-white border-r border-slate-100 flex flex-col flex-shrink-0 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]"
+                        >
+                            <div className="p-6 border-b border-slate-50 bg-gradient-to-b from-slate-50/50">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                    <Brain size={14} className="text-blue-500" />
+                                    Knowledge Tree
+                                </p>
                             </div>
 
-                            <section className="mb-10">
-                                <h3 className="text-sm font-black text-slate-800 mb-6 flex items-center justify-between">
-                                    Top Knowledge Categories
-                                    <BarChart3 size={14} className="text-slate-400" />
-                                </h3>
-                                <div className="space-y-4">
-                                    {CATEGORIES_STATS.map((cat, idx) => (
-                                        <div key={idx}>
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-5 h-5 rounded flex items-center justify-center text-white text-[9px] font-bold shadow-sm dynamic-bg" style={{ '--bg-color': cat.color } as React.CSSProperties}>
-                                                        {String.fromCharCode(97 + idx).toUpperCase()}
-                                                    </div>
-                                                    <span className="text-xs font-bold text-slate-600">{cat.label}</span>
-                                                </div>
-                                                <span className="text-xs font-black text-slate-800">{cat.value}</span>
-                                            </div>
-                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${(cat.value / 25) * 100}%` }}
-                                                    transition={{ duration: 1, delay: idx * 0.1 }}
-                                                    className="h-full rounded-full dynamic-bg opacity-80"
-                                                    style={{ '--bg-color': cat.color } as React.CSSProperties}
-                                                />
-                                            </div>
-                                        </div>
+                            <nav className="flex-1 px-4 space-y-6 overflow-y-auto scrollbar-none py-4">
+                                <div className="space-y-1">
+                                    {TREE_DATA.map(item => (
+                                        <SidebarTreeItem key={item.id} item={item} />
                                     ))}
                                 </div>
-                            </section>
+                            </nav>
 
-                            <section className="mb-10 p-6 bg-slate-50 border border-slate-100 rounded-[28px]">
-                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <Clock size={14} />
-                                    Time on Neuro Map
-                                </h3>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Member Since:</span>
-                                        <span className="text-slate-800 font-bold tracking-tight">Apr 2024</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Days Active:</span>
-                                        <span className="text-slate-800 font-bold tracking-tight">37 days</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500 font-medium">Last Activity:</span>
-                                        <span className="text-slate-800 font-bold tracking-tight">1 hour ago</span>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
-                                        <Brain size={16} className="text-blue-500" />
-                                        Behavioral Snapshot
-                                        <span className="text-[9px] text-slate-400 normal-case font-medium ml-1">(Non-clinical)</span>
-                                    </h3>
-                                    <Info size={14} className="text-slate-300" />
-                                </div>
-
-                                <div className="p-6 bg-gradient-to-br from-blue-50/50 to-white border border-blue-100/50 rounded-[32px] relative overflow-hidden">
-                                    <p className="text-xs text-slate-600 leading-relaxed font-medium mb-4">
-                                        Your activity suggests a strong preference for <span className="text-blue-600 font-bold">structured learning and analytical problem-solving</span>, with sustained attention in Tech & Digital Topics.
-                                    </p>
-                                    <div className="flex flex-col gap-2 p-3 bg-white/80 rounded-xl border border-blue-50 mb-4 shadow-sm">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tendency Hypothesis</p>
-                                        <p className="text-[11px] text-slate-800 font-black">Convergent Thinker / Intellectual Depth</p>
-                                    </div>
-                                    <button className="w-full py-3 bg-white border border-blue-200 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all shadow-sm">
-                                        Take Big Five Assessment
-                                    </button>
-                                </div>
-                            </section>
-                        </aside>
+                            <div className="p-6 border-t border-slate-50 bg-slate-50/30">
+                                <button className="w-full bg-slate-900 text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-slate-900/10 active:scale-95">
+                                    <Plus size={16} />
+                                    New Topic
+                                </button>
+                            </div>
+                        </motion.aside>
                     )}
+                </AnimatePresence>
+
+                {/* Main View */}
+                <main className="flex-1 flex flex-col bg-[#eff3f8] relative overflow-hidden">
+                    <div className="flex-1 overflow-hidden relative flex">
+                        <div className="flex-1 relative overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+                            <Outlet />
+                            <div className="h-20"></div> {/* Bottom spacer */}
+                        </div>
+
+                        {/* Right Sidebar: Profile & Insights (Only on Dashboard) */}
+                        {location.pathname === '/dashboard' && (
+                            <aside className="w-80 border-l border-slate-200 flex flex-col bg-white overflow-y-auto scrollbar-none p-6 hidden xl:flex">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <User size={18} />
+                                        </div>
+                                        <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Profile & Insights</h2>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold border border-emerald-100">
+                                        <CheckCircle2 size={12} />
+                                        <span>Ready</span>
+                                    </div>
+                                </div>
+
+                                <section className="mb-10">
+                                    <h3 className="text-sm font-black text-slate-800 mb-6 flex items-center justify-between">
+                                        Top Categories
+                                        <BarChart3 size={14} className="text-slate-400" />
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {CATEGORIES_STATS.map((cat, idx) => (
+                                            <div key={idx}>
+                                                <div className="flex items-center justify-between mb-1.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-5 h-5 rounded flex items-center justify-center text-white text-[9px] font-bold shadow-sm category-indicator" data-category={cat.type}>
+                                                            {String.fromCharCode(97 + idx).toUpperCase()}
+                                                        </div>
+                                                        <span className="text-xs font-bold text-slate-600">{cat.label}</span>
+                                                    </div>
+                                                    <span className="text-xs font-black text-slate-800">{cat.value}</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${(cat.value / 25) * 100}%` }}
+                                                        transition={{ duration: 1, delay: idx * 0.1 }}
+                                                        className="h-full rounded-full opacity-80 category-indicator"
+                                                        data-category={cat.type}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                <section className="mb-8 p-5 bg-slate-50 border border-slate-100 rounded-2xl">
+                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <Clock size={14} />
+                                        Time on MAXMUS
+                                    </h3>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-slate-500 font-medium">Member Since:</span>
+                                            <span className="text-slate-800 font-bold tracking-tight">Apr 2024</span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-slate-500 font-medium">Days Active:</span>
+                                            <span className="text-slate-800 font-bold tracking-tight">37</span>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <div className="p-5 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl relative overflow-hidden shadow-xl shadow-blue-500/20">
+                                        <div className="relative z-10">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <Brain size={16} className="text-blue-200" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-blue-100">Analysis</span>
+                                            </div>
+                                            <p className="text-xs leading-relaxed font-medium mb-4 text-blue-50">
+                                                Strong preference for <span className="text-white font-bold">analytical problem-solving</span> detected.
+                                            </p>
+                                            <button className="w-full py-2.5 bg-white/10 border border-white/20 text-white rounded-[10px] text-[10px] font-black uppercase tracking-widest hover:bg-white/20 transition-all backdrop-blur-sm">
+                                                View Report
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </aside>
+                        )}
+                    </div>
                 </main>
             </div>
         </div>
     );
 }
 
-function SidebarTreeItem({ item, depth = 0 }: { item: TreeItem; depth?: number }) {
+function SidebarTreeItem({ item }: { item: TreeItem }) {
     const [isExpanded, setIsExpanded] = useState(item.expanded || false);
     const hasChildren = item.children && item.children.length > 0;
 
@@ -228,8 +259,7 @@ function SidebarTreeItem({ item, depth = 0 }: { item: TreeItem; depth?: number }
         <div className="space-y-0.5">
             <div
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`group flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer dynamic-ml ${item.active ? 'bg-blue-50 text-blue-600' : 'hover:bg-slate-50 text-slate-500'}`}
-                style={{ '--ml-value': `${depth * 4}px` } as React.CSSProperties}
+                className={`group flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer ${item.active ? 'bg-blue-50 text-blue-600' : 'hover:bg-slate-50 text-slate-500'}`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">
                     {hasChildren ? (
@@ -254,10 +284,10 @@ function SidebarTreeItem({ item, depth = 0 }: { item: TreeItem; depth?: number }
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden border-l border-slate-100 ml-4 pl-1"
+                        className="overflow-hidden border-l border-slate-100 ml-5 pl-1"
                     >
                         {item.children!.map(child => (
-                            <SidebarTreeItem key={child.id} item={child} depth={depth + 1} />
+                            <SidebarTreeItem key={child.id} item={child} />
                         ))}
                     </motion.div>
                 )}
