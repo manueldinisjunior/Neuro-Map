@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
     Brain, Search, Bell, Globe, Moon, Clock, Plus,
     ChevronDown, ChevronRight, User, CheckCircle2,
-    BarChart3, Info, Maximize2
+    BarChart3, Info, Maximize2, Menu
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +28,7 @@ export function DashboardLayout() {
                         <Brain size={24} />
                     </div>
                     <div>
-                        <h1 className="text-xl font-black text-slate-800 tracking-tighter leading-none uppercase">Neuro Map</h1>
+                        <h1 className="text-xl font-black text-slate-800 tracking-tighter leading-none uppercase">MAXMUS</h1>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Cognitive OS</p>
                     </div>
                 </div>
@@ -68,23 +68,32 @@ export function DashboardLayout() {
                 {/* Global Top Bar */}
                 <header className="h-20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-10 border-b border-slate-100 flex-shrink-0 z-40">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/40">
-                            <Globe size={24} />
-                        </div>
-                        <span className="font-black text-2xl tracking-tighter text-slate-800">Neuro Map</span>
+                        <button
+                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
+                            aria-label="Toggle menu"
+                            title="Toggle menu"
+                        >
+                            <Menu size={24} />
+                        </button>
                     </div>
 
                     <div className="flex bg-slate-100/80 p-1.5 rounded-2xl gap-1 border border-white">
-                        {['Dashboard', 'Notes', 'Graph View'].map(tab => (
-                            <Link
-                                key={tab}
-                                to={tab === 'Dashboard' ? '/dashboard' : tab === 'Graph View' ? '/workspace' : '#'}
-                                onClick={() => setActiveTab(tab.toLowerCase())}
-                                className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab.toLowerCase() ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
-                            >
-                                {tab}
-                            </Link>
-                        ))}
+                        {['Dashboard', 'Notes', 'Mind Map'].map(tab => {
+                            const path = tab === 'Dashboard' ? '/dashboard' :
+                                tab === 'Notes' ? '/dashboard/notes' :
+                                    '/dashboard/mind-map';
+                            const isActive = location.pathname === path;
+
+                            return (
+                                <Link
+                                    key={tab}
+                                    to={path}
+                                    className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${isActive ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                                >
+                                    {tab}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     <div className="flex items-center gap-6">

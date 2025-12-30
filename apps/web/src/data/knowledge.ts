@@ -6,6 +6,17 @@ export interface TreeItem {
     count?: number;
     active?: boolean;
     color?: string; // Added for graph visualization
+    archived?: boolean;
+}
+
+export interface Note {
+    id: string;
+    title: string;
+    content: string;
+    category: string;
+    tags: string[];
+    createdAt: string;
+    color?: string;
 }
 
 export const TREE_DATA: TreeItem[] = [
@@ -56,4 +67,52 @@ export const CATEGORIES_STATS = [
     { label: 'Science & Research', value: 15, color: '#3b82f6' },
     { label: 'Productivity & Methods', value: 13, color: '#f59e0b' },
     { label: 'Education & Learning', value: 12, color: '#f43f5e' }
+];
+
+export const NOTES_DATA: Note[] = [
+    {
+        id: 'n1',
+        title: 'React Hooks Deep Dive',
+        content: 'Hooks allow function components to have access to state and other React features. Because of this, class components are generally no longer needed. The most common hooks are useState and useEffect.',
+        category: 'Professional Skills',
+        tags: ['React', 'Frontend', 'JavaScript'],
+        createdAt: '2024-05-20T10:00:00Z',
+        color: '#3b82f6'
+    },
+    {
+        id: 'n2',
+        title: 'Stoicism in Modern Life',
+        content: 'Stoicism is a philosophy of personal ethics informed by its system of logic and its views on the natural world. It teaches the development of self-control and fortitude as a means of overcoming destructive emotions.',
+        category: 'Education & Learning',
+        tags: ['Philosophy', 'Life', 'Ethics'],
+        createdAt: '2024-05-18T14:30:00Z',
+        color: '#10b981'
+    },
+    {
+        id: 'n3',
+        title: 'Neural Networks 101',
+        content: 'A neural network is a network or circuit of neurons, or in a modern sense, an artificial neural network, composed of artificial neurons or nodes. Thus a neural network is either a biological neural network, made up of real biological neurons, or an artificial neural network, for solving artificial intelligence (AI) problems.',
+        category: 'Technology & Digital Topics',
+        tags: ['AI', 'ML', 'Science'],
+        createdAt: '2024-05-15T09:15:00Z',
+        color: '#f43f5e'
+    },
+    {
+        id: 'n4',
+        title: 'The Pomodoro Technique',
+        content: 'The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks.',
+        category: 'Productivity & Methods',
+        tags: ['Productivity', 'Time Management'],
+        createdAt: '2024-05-12T16:00:00Z',
+        color: '#f59e0b'
+    },
+    {
+        id: 'n5',
+        title: 'TypeScript Generics',
+        content: 'Generics provide a way to make components work over a variety of types rather than a single one. This allows users to consume these components and use their own types.',
+        category: 'Professional Skills',
+        tags: ['TypeScript', 'Coding'],
+        createdAt: '2024-05-10T11:20:00Z',
+        color: '#3b82f6'
+    }
 ];

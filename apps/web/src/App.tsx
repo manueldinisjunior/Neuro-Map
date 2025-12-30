@@ -12,6 +12,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { TopicProvider } from './context/TopicContext';
 import './App.css';
 
+import Notes from './pages/Notes';
 import GraphWorkspace from './pages/GraphWorkspace';
 
 function App() {
@@ -32,12 +33,11 @@ function App() {
             {/* Onboarding */}
             <Route path="/onboarding" element={<Onboarding />} />
 
-            {/* Workspace / Graph View (New UI) */}
-            <Route path="/workspace" element={<GraphWorkspace />} />
-
-            {/* Protected Routes (Mock protection for now) */}
+            {/* Application Routes (Dashboard Layout) */}
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
+              <Route path="notes" element={<Notes />} />
+              <Route path="mind-map" element={<GraphWorkspace />} />
             </Route>
 
             {/* Catch all redirect */}

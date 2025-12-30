@@ -194,4 +194,8 @@ body {
   .dynamic-opacity {
     opacity: var(--opacity-value);
   }
+
+  .dynamic-width {
+    width: var(--width-value);
+  }
 }
