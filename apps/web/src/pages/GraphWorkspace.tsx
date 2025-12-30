@@ -3,36 +3,160 @@ import ForceGraph2D from 'react-force-graph-2d';
 import {
     Search, Bell, ChevronRight, ChevronDown, Plus,
     X, MoreHorizontal, MessageSquare, Tag, Maximize2,
-    Minus, ZoomIn, ZoomOut, User, LayoutGrid, Brain, Clock, 
-    Sparkles, ShieldAlert, BarChart3, Info
+    Minus, ZoomIn, ZoomOut, User, LayoutGrid, Brain, Clock,
+    Sparkles, ShieldAlert, BarChart3, Info, Globe, Moon, Star,
+    Edit2, Trash2, Settings, ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Mock data based on the image
-const TREE_DATA = [
+interface TreeItem {
+    id: string;
+    label: string;
+    expanded?: boolean;
+    children?: TreeItem[];
+    count?: number;
+    active?: boolean;
+}
+
+const TREE_DATA: TreeItem[] = [
     {
-        id: 'kb',
-        label: 'KNOWLEDGE BASE',
+        id: '1',
+        label: 'EDUCATION & LEARNING',
+        expanded: true,
         children: [
-            { id: 'cs', label: 'Computer Science', count: 12 },
             {
-                id: 'wd',
-                label: 'Web Development',
-                count: 8,
-                expanded: true,
+                id: '1-1',
+                label: 'Academic Subjects',
                 children: [
-                    { id: 'fe', label: 'Frontend' },
-                    { id: 're', label: 'React Ecosystem', active: true },
-                    { id: 'be', label: 'Backend API' }
+                    { id: '1-1-1', label: 'Mathematics', children: [{ id: '1-1-1-1', label: 'Algebra' }, { id: '1-1-1-2', label: 'Calculus' }, { id: '1-1-1-3', label: 'Statistics' }] },
+                    { id: '1-1-2', label: 'Computer Science', children: [{ id: '1-1-2-1', label: 'Data Structures' }, { id: '1-1-2-2', label: 'Algorithms' }, { id: '1-1-2-3', label: 'Operating Systems' }] },
+                    { id: '1-1-3', label: 'Natural Sciences', children: [{ id: '1-1-3-1', label: 'Physics' }, { id: '1-1-3-2', label: 'Chemistry' }, { id: '1-1-3-3', label: 'Biology' }] }
+                ]
+            },
+            {
+                id: '1-2',
+                label: 'Courses & Certifications',
+                children: [
+                    { id: '1-2-1', label: 'Online Courses', children: [{ id: '1-2-1-1', label: 'MOOCs' }, { id: '1-2-1-2', label: 'Bootcamps' }] },
+                    { id: '1-2-2', label: 'Formal Education', children: [{ id: '1-2-2-1', label: 'Degrees' }, { id: '1-2-2-2', label: 'Diplomas' }] }
+                ]
+            },
+            {
+                id: '1-3',
+                label: 'Learning Methods',
+                children: [
+                    { id: '1-3-1', label: 'Active Learning' },
+                    { id: '1-3-2', label: 'Spaced Repetition' },
+                    { id: '1-3-3', label: 'Note-Taking Systems' }
                 ]
             }
         ]
     },
     {
-        id: 'prj',
-        label: 'PROJECTS',
+        id: '2',
+        label: 'PROFESSIONAL SKILLS',
         children: [
-            { id: 'si', label: 'Startup Ideas', count: 3 }
+            {
+                id: '2-1',
+                label: 'Technical Skills',
+                children: [
+                    { id: '2-1-1', label: 'Programming', children: [{ id: '2-1-1-1', label: 'JavaScript' }, { id: '2-1-1-2', label: 'Python' }, { id: '2-1-1-3', label: 'Java' }] },
+                    {
+                        id: '2-1-2', label: 'Web Development', children: [
+                            { id: '2-1-2-1', label: 'Frontend', children: [{ id: '2-1-2-1-1', label: 'HTML' }, { id: '2-1-2-1-2', label: 'CSS' }, { id: '2-1-2-1-3', label: 'React' }] },
+                            { id: '2-1-2-2', label: 'Backend', children: [{ id: '2-1-2-2-1', label: 'APIs' }, { id: '2-1-2-2-2', label: 'Databases' }] }
+                        ]
+                    },
+                    { id: '2-1-3', label: 'Data Skills', children: [{ id: '2-1-3-1', label: 'Data Analysis' }, { id: '2-1-3-2', label: 'Data Visualization' }] }
+                ]
+            },
+            {
+                id: '2-2',
+                label: 'Soft Skills',
+                children: [
+                    { id: '2-2-1', label: 'Communication', children: [{ id: '2-2-1-1', label: 'Writing' }, { id: '2-2-1-2', label: 'Presentations' }] },
+                    { id: '2-2-2', label: 'Collaboration', children: [{ id: '2-2-2-1', label: 'Teamwork' }, { id: '2-2-2-2', label: 'Leadership' }] }
+                ]
+            },
+            { id: '2-3', label: 'Work Methods', children: [{ id: '2-3-1', label: 'Agile' }, { id: '2-3-2', label: 'Project Planning' }] }
+        ]
+    },
+    {
+        id: '3',
+        label: 'PROJECTS & WORK',
+        children: [
+            { id: '3-1', label: 'Personal Projects', children: [{ id: '3-1-1', label: 'Side Projects' }, { id: '3-1-2', label: 'Learning Projects' }] },
+            { id: '3-2', label: 'Professional Experience', children: [{ id: '3-2-1', label: 'Company Projects' }, { id: '3-2-2', label: 'Freelance Work' }] },
+            { id: '3-3', label: 'Portfolio', children: [{ id: '3-3-1', label: 'Case Studies' }, { id: '3-3-2', label: 'Demonstrations' }] }
+        ]
+    },
+    {
+        id: '4',
+        label: 'SCIENCE & RESEARCH',
+        children: [
+            {
+                id: '4-1', label: 'Computer Science', children: [
+                    { id: '4-1-1', label: 'Artificial Intelligence', children: [{ id: '4-1-1-1', label: 'Machine Learning' }, { id: '4-1-1-2', label: 'Neural Networks' }] },
+                    { id: '4-1-2', label: 'Software Engineering' }
+                ]
+            },
+            { id: '4-2', label: 'Psychology (Non-clinical)', children: [{ id: '4-2-1', label: 'Cognitive Psychology' }, { id: '4-2-2', label: 'Learning Theory' }] },
+            { id: '4-3', label: 'Philosophy', children: [{ id: '4-3-1', label: 'Logic' }, { id: '4-3-2', label: 'Ethics' }] },
+            { id: '4-4', label: 'Research Methods', children: [{ id: '4-4-1', label: 'Literature Review' }, { id: '4-4-2', label: 'Experimental Design' }] }
+        ]
+    },
+    {
+        id: '5',
+        label: 'TECHNOLOGY & DIGITAL TOPICS',
+        children: [
+            { id: '5-1', label: 'Software Engineering', children: [{ id: '5-1-1', label: 'System Design' }, { id: '5-1-2', label: 'Testing' }] },
+            { id: '5-2', label: 'Cloud & Infrastructure', children: [{ id: '5-2-1', label: 'Cloud Computing' }, { id: '5-2-2', label: 'DevOps' }] },
+            { id: '5-3', label: 'Cybersecurity (Conceptual)', children: [{ id: '5-3-1', label: 'Security Principles' }, { id: '5-3-2', label: 'Privacy by Design' }] },
+            { id: '5-4', label: 'Emerging Technologies', children: [{ id: '5-4-1', label: 'Blockchain' }, { id: '5-4-2', label: 'IoT' }] }
+        ]
+    },
+    {
+        id: '6',
+        label: 'CREATIVITY & CULTURE',
+        children: [
+            { id: '6-1', label: 'Design', children: [{ id: '6-1-1', label: 'UI Design' }, { id: '6-1-2', label: 'UX Principles' }] },
+            { id: '6-2', label: 'Writing', children: [{ id: '6-2-1', label: 'Technical Writing' }, { id: '6-2-2', label: 'Creative Writing' }] },
+            { id: '6-3', label: 'Media & Art', children: [{ id: '6-3-1', label: 'Digital Art' }, { id: '6-3-2', label: 'Music Production' }] },
+            { id: '6-4', label: 'Culture', children: [{ id: '6-4-1', label: 'Cultural Studies' }, { id: '6-4-2', label: 'Media Literacy' }] }
+        ]
+    },
+    {
+        id: '7',
+        label: 'PRODUCTIVITY & METHODS',
+        children: [
+            { id: '7-1', label: 'Time Management', children: [{ id: '7-1-1', label: 'Task Planning' }, { id: '7-1-2', label: 'Prioritization' }] },
+            { id: '7-2', label: 'Knowledge Management', children: [{ id: '7-2-1', label: 'Mind Mapping' }, { id: '7-2-2', label: 'Personal Knowledge Systems' }] },
+            { id: '7-3', label: 'Problem Solving', children: [{ id: '7-3-1', label: 'Critical Thinking' }, { id: '7-3-2', label: 'Systems Thinking' }] }
+        ]
+    },
+    {
+        id: '8',
+        label: 'LANGUAGES & COMMUNICATION',
+        children: [
+            { id: '8-1', label: 'Languages', children: [{ id: '8-1-1', label: 'English' }, { id: '8-1-2', label: 'German' }, { id: '8-1-3', label: 'Portuguese' }] },
+            { id: '8-2', label: 'Communication Skills', children: [{ id: '8-2-1', label: 'Public Speaking' }, { id: '8-2-2', label: 'Professional Writing' }] },
+            { id: '8-3', label: 'Linguistics', children: [{ id: '8-3-1', label: 'Semantics' }, { id: '8-3-2', label: 'Syntax' }] }
+        ]
+    },
+    {
+        id: '9',
+        label: 'GENERAL INTERESTS',
+        children: [
+            { id: '9-1', label: 'Hobbies', children: [{ id: '9-1-1', label: 'Sports' }, { id: '9-1-2', label: 'Reading' }] },
+            { id: '9-2', label: 'Public Topics', children: [{ id: '9-2-1', label: 'Technology Trends' }, { id: '9-2-2', label: 'Science News' }] },
+            { id: '9-3', label: 'Lifestyle (Non-sensitive)', children: [{ id: '9-3-1', label: 'Healthy Routines' }, { id: '9-3-2', label: 'Learning Habits' }] }
+        ]
+    },
+    {
+        id: '10',
+        label: 'CUSTOM (USER-DEFINED)',
+        children: [
+            { id: '10-1', label: 'User Topics', children: [{ id: '10-1-1', label: 'Filtered Topic' }] }
         ]
     }
 ];
@@ -82,16 +206,10 @@ const USER_DATA = {
     subcategoriesCount: 8
 };
 
-const CATEGORIES_DATA = [
-    { id: 'tech', label: 'Technology & Digital Topics', notesCount: 24, wordsSum: 1250, color: '#3b82f6', icon: 'zap', lastActive: '2025-12-30T10:00:00Z' },
-    { id: 'prof', label: 'Professional Skills', notesCount: 18, wordsSum: 900, color: '#8b5cf6', icon: 'briefcase', lastActive: '2025-12-29T15:00:00Z' },
-    { id: 'sci', label: 'Science & Research', notesCount: 15, wordsSum: 750, color: '#ec4899', icon: 'microscope', lastActive: '2025-12-28T09:00:00Z' },
-    { id: 'prod', label: 'Productivity & Methods', notesCount: 13, wordsSum: 400, color: '#f59e0b', icon: 'check-circle', lastActive: '2025-12-27T18:00:00Z' },
-    { id: 'edu', label: 'Education & Learning', notesCount: 12, wordsSum: 600, color: '#10b981', icon: 'book', lastActive: '2025-12-26T14:00:00Z' },
-    { id: 'lang', label: 'Languages & Communication', notesCount: 10, wordsSum: 500, color: '#f43f5e', icon: 'languages', lastActive: '2025-12-25T11:00:00Z' },
-    { id: 'proj', label: 'Projects & Work', notesCount: 9, wordsSum: 450, color: '#06b6d4', icon: 'folder', lastActive: '2025-12-24T16:00:00Z' },
-    { id: 'crea', label: 'Creativity & Culture', notesCount: 9, wordsSum: 300, color: '#6366f1', icon: 'palette', lastActive: '2025-12-23T10:00:00Z' },
-    { id: 'health', label: 'Health & Wellness', notesCount: 5, wordsSum: 200, color: '#10b981', icon: 'heart', lastActive: '2025-12-22T08:00:00Z' }
+const DEFAULT_CATEGORIES = [
+    { id: 'edu', label: 'Education & Learning', color: '#10b981', icon: 'book' },
+    { id: 'prof', label: 'Professional Skills', color: '#8b5cf6', icon: 'briefcase' },
+    { id: 'tech', label: 'Technology', color: '#3b82f6', icon: 'zap' }
 ];
 
 const BUBBLES = [
@@ -110,8 +228,164 @@ export default function GraphWorkspace() {
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const [isOnboarded, setIsOnboarded] = useState(false);
+    const [onboardingStep, setOnboardingStep] = useState(0); // 0: Welcome, 1: Categories, 2: Topics
+    const [onboardingCategories, setOnboardingCategories] = useState<{ label: string, color: string, topics: string[] }[]>([]);
+
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [treeData, setTreeData] = useState<TreeItem[]>([]);
+    const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [{ id: 'root', label: 'Neuro Map', color: '#3b82f6', size: 30 }], links: [] });
+
+    // Form State
+    const [formTopic, setFormTopic] = useState('');
+    const [formTitle, setFormTitle] = useState('');
+    const [formContent, setFormContent] = useState('');
+    const [formCategory, setFormCategory] = useState('');
+
     const containerRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<any>(null);
+
+    useEffect(() => {
+        // Mock onboarding check
+        const hasCompletedOnboarding = localStorage.getItem('neuro_onboarded');
+        if (hasCompletedOnboarding) setIsOnboarded(true);
+    }, []);
+
+    const completeOnboarding = () => {
+        // Generate structure from onboarding categories
+        const newTree: TreeItem[] = onboardingCategories.map((cat, idx) => ({
+            id: `cat-${idx}`,
+            label: cat.label.toUpperCase(),
+            expanded: true,
+            children: cat.topics.map((topic, tidx) => ({
+                id: `topic-${idx}-${tidx}`,
+                label: topic,
+                count: 0
+            }))
+        }));
+
+        const newNodes = [
+            { id: 'root', label: 'Neuro Map', color: '#3b82f6', size: 30, x: 0, y: 0 },
+            ...onboardingCategories.map((cat, idx) => ({
+                id: `cat-${idx}`,
+                label: cat.label,
+                color: cat.color,
+                size: 25,
+                x: Math.cos((idx / onboardingCategories.length) * 2 * Math.PI) * 150,
+                y: Math.sin((idx / onboardingCategories.length) * 2 * Math.PI) * 150
+            })),
+            ...onboardingCategories.flatMap((cat, idx) =>
+                cat.topics.map((topic, tidx) => ({
+                    id: `topic-${idx}-${tidx}`,
+                    label: topic,
+                    color: cat.color,
+                    size: 15,
+                    x: Math.cos((idx / onboardingCategories.length) * 2 * Math.PI) * 250 + (Math.random() - 0.5) * 50,
+                    y: Math.sin((idx / onboardingCategories.length) * 2 * Math.PI) * 250 + (Math.random() - 0.5) * 50
+                }))
+            )
+        ];
+
+        const newLinks = [
+            ...onboardingCategories.map((_, idx) => ({ source: 'root', target: `cat-${idx}` })),
+            ...onboardingCategories.flatMap((cat, idx) =>
+                cat.topics.map((_, tidx) => ({ source: `cat-${idx}`, target: `topic-${idx}-${tidx}` }))
+            )
+        ];
+
+        setTreeData(newTree);
+        setGraphData({ nodes: newNodes, links: newLinks });
+        setFormCategory(newTree[0]?.id || '');
+
+        setIsOnboarded(true);
+        localStorage.setItem('neuro_onboarded', 'true');
+        localStorage.setItem('neuro_data', JSON.stringify({ tree: newTree, graph: { nodes: newNodes, links: newLinks } }));
+    };
+
+    const handleAction = (id: string, type: 'topic' | 'category', action: 'delete' | 'archive' | 'rename', newLabel?: string) => {
+        if (action === 'delete') {
+            setGraphData(prev => ({
+                ...prev,
+                nodes: prev.nodes.filter(n => n.id !== id),
+                links: prev.links.filter(l => l.source !== id && l.target !== id)
+            }));
+
+            const deleteFromTree = (items: TreeItem[]): TreeItem[] => {
+                return items.filter(item => item.id !== id).map(item => ({
+                    ...item,
+                    children: item.children ? deleteFromTree(item.children) : undefined
+                }));
+            };
+            setTreeData(prev => deleteFromTree(prev));
+        } else if (action === 'archive') {
+            const archiveInTree = (items: TreeItem[]): TreeItem[] => {
+                return items.map(item => {
+                    if (item.id === id) return { ...item, archived: !item.archived };
+                    return {
+                        ...item,
+                        children: item.children ? archiveInTree(item.children) : undefined
+                    };
+                });
+            };
+            setTreeData(prev => archiveInTree(prev));
+        } else if (action === 'rename' && newLabel) {
+            setGraphData(prev => ({
+                ...prev,
+                nodes: prev.nodes.map(n => n.id === id ? { ...n, label: newLabel } : n)
+            }));
+            const renameInTree = (items: TreeItem[]): TreeItem[] => {
+                return items.map(item => {
+                    if (item.id === id) return { ...item, label: newLabel };
+                    return {
+                        ...item,
+                        children: item.children ? renameInTree(item.children) : undefined
+                    };
+                });
+            };
+            setTreeData(prev => renameInTree(prev));
+        }
+    };
+
+    const handleSaveNote = () => {
+        if (!formTopic) return;
+
+        const newNodeId = formTopic.toLowerCase().replace(/\s+/g, '-');
+        const newNode = {
+            id: newNodeId,
+            label: formTopic,
+            color: CATEGORIES_DATA.find(c => c.id === formCategory)?.color || '#3b82f6',
+            size: 20,
+            x: Math.random() * 200 - 100,
+            y: Math.random() * 200 - 100
+        };
+
+        setGraphData(prev => ({
+            nodes: [...prev.nodes, newNode],
+            links: [...prev.links, { source: 'root', target: newNodeId }]
+        }));
+
+        // Update tree data (simplified: add to first section for mock)
+        setTreeData(prev => {
+            const next = [...prev];
+            if (next[0].children) {
+                next[0].children = [...next[0].children, { id: newNodeId, label: formTopic, count: 1 }];
+            }
+            return next;
+        });
+
+        // Reset and close
+        setFormTopic('');
+        setFormTitle('');
+        setFormContent('');
+        setIsNoteModalOpen(false);
+
+        // Optional: show some success feedback or focus the new node
+        setTimeout(() => {
+            graphRef.current?.centerAt(newNode.x, newNode.y, 1000);
+            graphRef.current?.zoom(2, 1000);
+            setSelectedTopic(formTopic);
+        }, 500);
+    };
 
     useEffect(() => {
         const updateDimensions = () => {
@@ -162,223 +436,265 @@ export default function GraphWorkspace() {
     return (
         <div className="flex h-screen w-full bg-[#f8fafc] text-[#1e293b] font-sans selection:bg-blue-100 selection:text-blue-700 overflow-hidden">
             {/* Sidebar Left */}
-            <aside className="w-72 border-r border-slate-200 flex flex-col bg-white">
+            <aside className="w-80 border-r border-slate-200 flex flex-col bg-white/80 backdrop-blur-xl z-20">
                 {/* Search */}
-                <div className="p-4">
+                <div className="p-6">
                     <div className="relative group">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={16} />
                         <input
                             type="text"
-                            placeholder="Search topics..."
-                            className="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all outline-none"
+                            placeholder="Search your knowledge..."
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-800/5 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all outline-none text-slate-700 placeholder:text-slate-400 font-medium"
                         />
                     </div>
                 </div>
 
                 {/* Tree View */}
-                <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-6 scrollbar-none">
-                    {TREE_DATA.map(section => (
-                        <div key={section.id}>
-                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">{section.label}</h3>
-                            <div className="space-y-1">
+                <div className="px-6 py-2">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-6 flex items-center justify-between">
+                        KNOWLEDGE NAVIGATION <span className="text-[8px] font-bold text-slate-300">(LAWFUL)</span>
+                    </h3>
+                </div>
+
+                <nav className="flex-1 overflow-y-auto px-4 scrollbar-none pb-20">
+                    <div className="space-y-4">
+                        {treeData.map(section => (
+                            <div key={section.id} className="space-y-1">
+                                <div className="flex items-center justify-between px-2 mb-2">
+                                    <span className="text-[10px] font-bold text-slate-400">{section.label}</span>
+                                    <button title="Add Sub-category" aria-label="Add Sub-category" className="text-slate-300 hover:text-slate-500"><Plus size={12} /></button>
+                                </div>
                                 {section.children?.map(item => (
-                                    <div key={item.id}>
-                                        <button className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-slate-50 rounded-lg group transition-colors text-sm font-medium text-slate-600">
-                                            <div className="flex items-center gap-2">
-                                                {item.children ? <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600" /> : <ChevronRight size={14} className="text-slate-300 group-hover:text-slate-500" />}
-                                                <span>{item.label}</span>
-                                            </div>
-                                            {item.count && <span className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] text-slate-500 font-bold">{item.count}</span>}
-                                        </button>
-                                        {item.expanded && item.children && (
-                                            <div className="ml-4 mt-1 border-l border-slate-100 pl-2 space-y-1">
-                                                {item.children.map(child => (
-                                                    <button
-                                                        key={child.id}
-                                                        className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all ${child.active ? 'bg-blue-50 text-blue-600 font-semibold shadow-sm shadow-blue-500/5 border border-blue-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
-                                                    >
-                                                        {child.label}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                                    <TreeItem key={item.id} item={item} depth={0} onDelete={handleDeleteNode} />
                                 ))}
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </nav>
 
                 {/* Footer Sidebar */}
-                <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-                    <button className="w-full bg-[#1e293b] text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#0f172a] transition-all shadow-lg shadow-slate-200 active:scale-95 font-bold text-sm">
-                        <Plus size={18} />
+                <div className="p-4 bg-white/50 border-t border-slate-100">
+                    <button
+                        title="Create New Topic"
+                        aria-label="Create New Topic"
+                        onClick={() => setIsNoteModalOpen(true)}
+                        className="w-full bg-blue-500 text-white py-3.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-xl shadow-blue-500/20 active:scale-95 font-bold text-sm"
+                    >
+                        <Plus size={18} aria-hidden="true" />
                         New Topic
                     </button>
                 </div>
             </aside>
 
             {/* Main Area */}
-            <main className="flex-1 flex flex-col relative overflow-hidden">
+            <main className="flex-1 flex flex-col relative overflow-hidden bg-[#eff3f8]">
                 {/* Top Header */}
-                <header className="h-16 border-b border-slate-100 bg-white flex items-center justify-between px-8 absolute top-0 left-0 right-0 z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                            <LayoutGrid size={20} />
+                <header className="h-20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-10 border-b border-slate-100 z-30">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-2xl shadow-blue-500/40">
+                            <Globe size={24} />
                         </div>
-                        <span className="font-extrabold text-xl tracking-tight text-slate-800">Neuro Map</span>
+                        <span className="font-black text-2xl tracking-tighter text-slate-800">Neuro Map</span>
                     </div>
 
-                    <nav className="flex items-center gap-8">
-                        <button className="text-blue-500 font-bold text-sm hover:translate-y-[-1px] transition-transform">Dashboard</button>
-                        <button className="text-slate-500 font-medium text-sm hover:text-slate-800 transition-colors">Notes</button>
-                        <button className="text-slate-500 font-medium text-sm hover:text-slate-800 transition-colors">Graph View</button>
-                    </nav>
+                    <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-1">
+                        {['Dashboard', 'Notes', 'Graph View'].map(tab => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab.toLowerCase())}
+                                title={`Switch to ${tab}`}
+                                aria-label={`Switch to ${tab}`}
+                                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab.toLowerCase() ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}`}
+                            >
+                                {tab}
+                            </button>
+                        ))}
+                    </div>
 
                     <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4 pr-6 border-r border-slate-200">
+                            <button title="History" aria-label="History" className="text-slate-400 hover:text-blue-500 transition-colors"><Clock size={20} /></button>
+                            <button title="Favorites" aria-label="Favorites" className="text-slate-400 hover:text-amber-500 transition-colors"><Star size={20} /></button>
+                            <button title="Dark Mode" aria-label="Toggle Dark Mode" className="text-slate-400 hover:text-indigo-500 transition-colors"><Moon size={20} /></button>
+                        </div>
                         <button
                             title="Notifications"
                             aria-label="Notifications"
-                            className="relative text-slate-400 hover:text-slate-600 transition-colors"
+                            className="relative w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600 transition-colors"
                         >
-                            <Bell size={20} aria-hidden="true" />
-                            <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></div>
+                            <Bell size={20} />
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold">2</div>
                         </button>
-                        <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
-                            <div className="text-right">
-                                <p className="text-sm font-bold text-slate-800 leading-none mb-0.5">Alex Chen</p>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pro Plan</p>
-                            </div>
-                            <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-200 flex items-center justify-center overflow-hidden shadow-sm">
-                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Alex`} alt="Avatar" className="w-full h-full object-cover" />
-                            </div>
+                        <div className="w-10 h-10 rounded-full border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform overflow-hidden bg-slate-200">
+                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Alex`} alt="User" />
                         </div>
                     </div>
                 </header>
 
                 {/* Content */}
-                <div className="flex-1 pt-16 flex flex-col relative" ref={containerRef}>
-                    {/* Breadcrumbs */}
-                    <div className="px-8 py-4 flex items-center text-sm">
-                        <div className="bg-white/80 backdrop-blur-md rounded-xl px-4 py-2 flex items-center gap-2 border border-slate-100 shadow-sm border-slate-200/50">
-                            <span className="text-slate-400">Knowledge Base</span>
-                            <ChevronRight size={14} className="text-slate-300" />
-                            <span className="text-slate-400">Web Dev</span>
-                            <ChevronRight size={14} className="text-slate-300" />
-                            <span className="text-blue-500 font-bold">React Ecosystem</span>
+                <div className="flex-1 flex flex-col relative" ref={containerRef}>
+                    {!isOnboarded ? (
+                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xl">
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-white p-12 rounded-[40px] shadow-2xl max-w-lg text-center"
+                            >
+                                <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white mx-auto mb-8 shadow-2xl shadow-blue-500/30">
+                                    <Brain size={40} />
+                                </div>
+                                <h2 className="text-3xl font-black text-slate-800 mb-4">Welcome to Neuro Map</h2>
+                                <p className="text-slate-500 font-medium mb-10 leading-relaxed">
+                                    Let's build your knowledge network. Add your first topic to begin visualizing your intellectual growth.
+                                </p>
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={completeOnboarding}
+                                        title="Start Mapping"
+                                        aria-label="Start Mapping"
+                                        className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
+                                    >
+                                        Start Mapping
+                                    </button>
+                                </div>
+                            </motion.div>
                         </div>
-                    </div>
+                    ) : (
+                        <>
+                            {/* Breadcrumbs simplified away to match image centered tabs */}
+                            {/* Graph Canvas */}
+                            <div className="flex-1 relative overflow-hidden graph-background">
+                                <ForceGraph2D
+                                    ref={graphRef}
+                                    width={dimensions.width}
+                                    height={dimensions.height}
+                                    graphData={graphData}
+                                    nodeRelSize={12}
+                                    nodeVal={node => (node as any).size}
+                                    nodeColor={node => (node as any).color}
+                                    linkColor={() => 'rgba(148, 163, 184, 0.2)'}
+                                    linkWidth={2}
+                                    backgroundColor="transparent"
+                                    onNodeClick={(node) => setSelectedTopic((node as any).label)}
+                                    nodeCanvasObject={(node: any, ctx, globalScale) => {
+                                        const label = node.label;
+                                        const size = (node.size || 20) * (selectedTopic === label ? 1.2 : 1);
+                                        const isSelected = selectedTopic === label;
 
-                    {/* Graph Canvas */}
-                    <div className="flex-1 relative overflow-hidden graph-background">
-                        <ForceGraph2D
-                            ref={graphRef}
-                            width={dimensions.width}
-                            height={dimensions.height}
-                            graphData={GRAPH_DATA}
-                            nodeRelSize={6}
-                            nodeVal={node => (node as any).size}
-                            nodeColor={node => (node as any).color}
-                            linkColor={() => '#e2e8f0'}
-                            linkWidth={2}
-                            backgroundColor="transparent"
-                            onNodeClick={(node) => setSelectedTopic((node as any).label === 'React Ecosystem' ? 'React Hooks' : (node as any).label)}
-                            nodeCanvasObject={(node: any, ctx, globalScale) => {
-                                const label = node.label;
-                                const size = node.size || 20;
+                                        // Glow/Shadow side
+                                        ctx.shadowBlur = isSelected ? 30 / globalScale : 15 / globalScale;
+                                        ctx.shadowColor = node.color;
 
-                                // Shadow/Glow effect
-                                ctx.shadowBlur = 15 / globalScale;
-                                ctx.shadowColor = node.color;
+                                        // 3D Sphere Effect
+                                        const gradient = ctx.createRadialGradient(
+                                            node.x - size / 3,
+                                            node.y - size / 3,
+                                            size / 10,
+                                            node.x,
+                                            node.y,
+                                            size
+                                        );
+                                        gradient.addColorStop(0, '#fff');
+                                        gradient.addColorStop(0.3, node.color);
+                                        gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
 
-                                // Draw sphere gradient
-                                const gradient = ctx.createRadialGradient(
-                                    node.x - size / 4,
-                                    node.y - size / 4,
-                                    size / 10,
-                                    node.x,
-                                    node.y,
-                                    size
-                                );
-                                gradient.addColorStop(0, '#fff');
-                                gradient.addColorStop(0.2, node.color);
-                                gradient.addColorStop(1, '#000'); // Shadow side
+                                        ctx.beginPath();
+                                        ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
+                                        ctx.fillStyle = gradient;
+                                        ctx.fill();
 
-                                ctx.beginPath();
-                                ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
-                                ctx.fillStyle = gradient;
-                                ctx.fill();
+                                        // Inner light shine
+                                        ctx.beginPath();
+                                        ctx.arc(node.x - size / 3, node.y - size / 3, size / 4, 0, 2 * Math.PI, false);
+                                        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                                        ctx.fill();
 
-                                // Label background
-                                if (globalScale > 0.6) {
-                                    const fontSize = 12 / globalScale;
-                                    ctx.font = `600 ${fontSize}px Inter, sans-serif`;
-                                    const textWidth = ctx.measureText(label).width;
-                                    const padding = 6 / globalScale;
+                                        // Label Callout (similar to image)
+                                        if (globalScale > 0.4) {
+                                            const fontSize = 14 / globalScale;
+                                            ctx.font = `${isSelected ? '800' : '600'} ${fontSize}px Inter, sans-serif`;
+                                            const textWidth = ctx.measureText(label).width;
+                                            const padding = 10 / globalScale;
 
-                                    ctx.shadowBlur = 0;
-                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                                            // Callout box
+                                            const bx = node.x - textWidth / 2 - padding;
+                                            const by = node.y + size + 15 / globalScale;
+                                            const bw = textWidth + padding * 2;
+                                            const bh = fontSize + padding * 1.5;
+                                            const r = 12 / globalScale;
 
-                                    // Draw rounded rect for label
-                                    const bx = node.x - textWidth / 2 - padding;
-                                    const by = node.y + size + 8 / globalScale;
-                                    const bw = textWidth + padding * 2;
-                                    const bh = fontSize + padding * 2;
-                                    const r = 6 / globalScale;
+                                            ctx.shadowBlur = 10 / globalScale;
+                                            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+                                            ctx.fillStyle = isSelected ? '#3b82f6' : 'white';
 
-                                    ctx.beginPath();
-                                    ctx.moveTo(bx + r, by);
-                                    ctx.lineTo(bx + bw - r, by);
-                                    ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + r);
-                                    ctx.lineTo(bx + bw, by + bh - r);
-                                    ctx.quadraticCurveTo(bx + bw, by + bh, bx + bw - r, by + bh);
-                                    ctx.lineTo(bx + r, by + bh);
-                                    ctx.quadraticCurveTo(bx, by + bh, bx, by + bh - r);
-                                    ctx.lineTo(bx, by + r);
-                                    ctx.quadraticCurveTo(bx, by, bx + r, by);
-                                    ctx.closePath();
-                                    ctx.fill();
+                                            // Triangle tail
+                                            ctx.beginPath();
+                                            ctx.moveTo(node.x, node.y + size + 5 / globalScale);
+                                            ctx.lineTo(node.x - 6 / globalScale, by);
+                                            ctx.lineTo(node.x + 6 / globalScale, by);
+                                            ctx.fill();
 
-                                    // Border for label
-                                    ctx.strokeStyle = '#e2e8f0';
-                                    ctx.lineWidth = 1 / globalScale;
-                                    ctx.stroke();
+                                            // Rounded rect
+                                            ctx.beginPath();
+                                            ctx.roundRect(bx, by, bw, bh, r);
+                                            ctx.fill();
 
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'middle';
-                                    ctx.fillStyle = '#475569';
-                                    ctx.fillText(label, node.x, by + bh / 2);
-                                }
-                            }}
-                        />
+                                            // Text
+                                            ctx.shadowBlur = 0;
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'middle';
+                                            ctx.fillStyle = isSelected ? 'white' : '#1e293b';
+                                            ctx.fillText(label, node.x, by + bh / 2);
 
-                        <div className="absolute bottom-10 left-8 flex flex-col gap-2">
-                            <button
-                                onClick={handleZoomIn}
-                                title="Zoom In"
-                                aria-label="Zoom In"
-                                className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-500 hover:border-blue-200 transition-all shadow-lg shadow-slate-200/50 active:scale-95"
-                            >
-                                <Plus size={20} aria-hidden="true" />
-                            </button>
-                            <button
-                                onClick={handleZoomOut}
-                                title="Zoom Out"
-                                aria-label="Zoom Out"
-                                className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-500 hover:border-blue-200 transition-all shadow-lg shadow-slate-200/50 active:scale-95"
-                            >
-                                <Minus size={20} aria-hidden="true" />
-                            </button>
-                            <button
-                                onClick={handleCenter}
-                                title="Reset View"
-                                aria-label="Reset View"
-                                className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-500 hover:border-blue-200 transition-all shadow-lg shadow-slate-200/50 active:scale-95 mt-2"
-                            >
-                                <Maximize2 size={18} aria-hidden="true" />
-                            </button>
-                        </div>
-                    </div>
+                                            if (isSelected) {
+                                                const subText = "11 Notes • React Native";
+                                                const subSize = 8 / globalScale;
+                                                ctx.font = `600 ${subSize}px Inter, sans-serif`;
+                                                ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                                                ctx.fillText(subText, node.x, by + bh + 12 / globalScale);
+
+                                                // Drawing small interactive icons for map-based edit/delete
+                                                // Note: Actual logic would involve hit-testing in a real app, 
+                                                // but for this visual mock we show the UI presence.
+                                                const iconSize = 10 / globalScale;
+                                                ctx.fillStyle = 'white';
+                                                ctx.beginPath();
+                                                ctx.roundRect(bx + bw + 10 / globalScale, by, bh, bh, r / 2);
+                                                ctx.fill();
+                                                ctx.fillStyle = '#ef4444'; // trash red
+                                                ctx.fillText('×', bx + bw + 10 / globalScale + bh / 2, by + bh / 2);
+
+                                                ctx.fillStyle = 'white';
+                                                ctx.beginPath();
+                                                ctx.roundRect(bx + bw + 10 / globalScale + bh + 5 / globalScale, by, bh, bh, r / 2);
+                                                ctx.fill();
+                                                ctx.fillStyle = '#3b82f6'; // edit blue
+                                                ctx.fillText('✎', bx + bw + 10 / globalScale + bh + 5 / globalScale + bh / 2, by + bh / 2);
+                                            }
+                                        }
+                                    }}
+                                />
+
+                                {/* Control Bar (Bottom Center) */}
+                                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl p-2 rounded-2xl border border-white shadow-2xl flex items-center gap-2">
+                                    <button title="Zoom In" aria-label="Zoom In" onClick={handleZoomIn} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Plus size={18} aria-hidden="true" /></button>
+                                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
+                                    <button title="Zoom Out" aria-label="Zoom Out" onClick={handleZoomOut} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Minus size={18} aria-hidden="true" /></button>
+                                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
+                                    <button title="Reset View" aria-label="Reset View" onClick={handleCenter} className="w-10 h-10 rounded-xl hover:bg-blue-50 text-slate-500 hover:text-blue-500 transition-all flex items-center justify-center"><Maximize2 size={18} aria-hidden="true" /></button>
+                                </div>
+
+                                <button
+                                    title="Add New Topic"
+                                    aria-label="Add New Topic"
+                                    onClick={() => setIsNoteModalOpen(true)}
+                                    className="absolute bottom-10 left-10 w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all"
+                                >
+                                    <Plus size={24} aria-hidden="true" />
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </main>
 
@@ -485,7 +801,7 @@ export default function GraphWorkspace() {
                                                 <ShieldAlert size={12} className="shrink-0 mt-0.5" />
                                                 <p>This is not a diagnosis. For higher accuracy, consider taking a validated personality assessment like the Big Five (IPIP).</p>
                                             </div>
-                                            <button className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-50 transition-colors shadow-sm">
+                                            <button title="Take Big Five Assessment" aria-label="Take Big Five Assessment" className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 rounded-xl text-[10px] font-bold hover:bg-blue-50 transition-colors shadow-sm">
                                                 Take Big Five Assessment
                                             </button>
                                         </div>
@@ -500,9 +816,9 @@ export default function GraphWorkspace() {
                                                     <span>{USER_DATA.categoriesCount}/10</span>
                                                 </div>
                                                 <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                    <div 
-                                                        className="h-full bg-slate-400 rounded-full" 
-                                                        style={{ width: `${(USER_DATA.categoriesCount / 10) * 100}%` }} 
+                                                    <div
+                                                        className="h-full bg-slate-400 rounded-full"
+                                                        style={{ width: `${(USER_DATA.categoriesCount / 10) * 100}%` }}
                                                     />
                                                 </div>
                                             </div>
@@ -512,9 +828,9 @@ export default function GraphWorkspace() {
                                                     <span>{USER_DATA.subcategoriesCount}/5</span>
                                                 </div>
                                                 <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                    <div 
-                                                        className="h-full bg-slate-400 rounded-full" 
-                                                        style={{ width: `${(USER_DATA.subcategoriesCount / 5) * 100}%` }} 
+                                                    <div
+                                                        className="h-full bg-slate-400 rounded-full"
+                                                        style={{ width: `${(USER_DATA.subcategoriesCount / 5) * 100}%` }}
                                                     />
                                                 </div>
                                             </div>
@@ -565,7 +881,7 @@ export default function GraphWorkspace() {
                             <div className="mb-10">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Recent Notes</h3>
-                                    <button className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">View All</button>
+                                    <button title="View All Notes" aria-label="View All Notes" className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">View All</button>
                                 </div>
                                 <div className="space-y-3">
                                     {RECENT_NOTES.map(note => (
@@ -595,9 +911,11 @@ export default function GraphWorkspace() {
                             <div className="mt-auto pt-6 flex gap-3">
                                 <button
                                     onClick={() => setIsNoteModalOpen(true)}
+                                    title="Add New Note"
+                                    aria-label="Add New Note"
                                     className="flex-1 bg-blue-500 text-white py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20 active:scale-95 font-bold text-sm"
                                 >
-                                    <Plus size={18} />
+                                    <Plus size={18} aria-hidden="true" />
                                     Add Note
                                 </button>
                                 <button
@@ -642,8 +960,8 @@ export default function GraphWorkspace() {
 
                                 <div className="flex items-center gap-12">
                                     <div className="hidden md:flex items-center gap-8">
-                                        <button className="text-slate-400 font-bold text-sm tracking-wide">My Notes</button>
-                                        <button className="text-blue-500 font-bold text-sm tracking-wide border-b-2 border-blue-500 pb-1">Neuro Map</button>
+                                        <button title="My Notes" aria-label="My Notes" className="text-slate-400 font-bold text-sm tracking-wide">My Notes</button>
+                                        <button title="Neuro Map" aria-label="Neuro Map" className="text-blue-500 font-bold text-sm tracking-wide border-b-2 border-blue-500 pb-1">Neuro Map</button>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm">
@@ -663,9 +981,24 @@ export default function GraphWorkspace() {
 
                                     <div className="space-y-6">
                                         <div>
+                                            <label className="block text-sm font-bold text-slate-800 mb-2">Category</label>
+                                            <select
+                                                value={formCategory}
+                                                onChange={(e) => setFormCategory(e.target.value)}
+                                                className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all font-medium appearance-none cursor-pointer"
+                                            >
+                                                {CATEGORIES_DATA.map(cat => (
+                                                    <option key={cat.id} value={cat.id}>{cat.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
                                             <label className="block text-sm font-bold text-slate-800 mb-2">Topic</label>
                                             <input
                                                 type="text"
+                                                value={formTopic}
+                                                onChange={(e) => setFormTopic(e.target.value)}
                                                 placeholder="Enter a topic..."
                                                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all placeholder:text-slate-300 font-medium"
                                             />
@@ -675,6 +1008,8 @@ export default function GraphWorkspace() {
                                             <label className="block text-sm font-bold text-slate-800 mb-2">Title <span className="text-slate-400 font-medium">(Optional)</span></label>
                                             <input
                                                 type="text"
+                                                value={formTitle}
+                                                onChange={(e) => setFormTitle(e.target.value)}
                                                 placeholder="Enter a title..."
                                                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all placeholder:text-slate-300 font-medium"
                                             />
@@ -684,12 +1019,20 @@ export default function GraphWorkspace() {
                                             <label className="block text-sm font-bold text-slate-800 mb-2">Content</label>
                                             <textarea
                                                 rows={6}
+                                                value={formContent}
+                                                onChange={(e) => setFormContent(e.target.value)}
                                                 placeholder="Write your thoughts here..."
                                                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 outline-none transition-all placeholder:text-slate-300 font-medium resize-none"
                                             />
                                         </div>
 
-                                        <button className="w-full bg-[#3b82f6] text-white py-5 rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-[#2563eb] transition-all shadow-xl shadow-blue-500/20 active:scale-95 mt-4">
+                                        <button
+                                            title="Save Note"
+                                            aria-label="Save Note"
+                                            onClick={handleSaveNote}
+                                            disabled={!formTopic}
+                                            className="w-full bg-[#3b82f6] text-white py-5 rounded-[20px] font-black uppercase tracking-widest text-sm hover:bg-[#2563eb] transition-all shadow-xl shadow-blue-500/20 active:scale-95 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
                                             Save Note
                                         </button>
                                     </div>
@@ -774,6 +1117,51 @@ export default function GraphWorkspace() {
                             </button>
                         </motion.div>
                     </div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+function TreeItem({ item, depth, onDelete }: { item: any, depth: number, onDelete: (id: string, type: any) => void }) {
+    const [isExpanded, setIsExpanded] = useState(item.expanded || false);
+    const hasChildren = item.children && item.children.length > 0;
+
+    return (
+        <div className="space-y-1">
+            <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={`group flex items-center justify-between px-2 py-2 hover:bg-slate-50 rounded-xl transition-all cursor-pointer ${item.active ? 'bg-blue-50 text-blue-600' : ''}`}
+            >
+                <div className="flex items-center gap-3">
+                    {hasChildren ? (
+                        <motion.div animate={{ rotate: isExpanded ? 0 : -90 }}>
+                            <ChevronDown size={14} className="text-slate-400" />
+                        </motion.div>
+                    ) : (
+                        <ChevronRight size={14} className="text-blue-300" />
+                    )}
+                    <span className={`text-sm font-semibold ${item.active ? 'text-blue-600' : 'text-slate-600'}`}>{item.label}</span>
+                </div>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button title="Edit" aria-label="Edit" className="p-1 hover:text-blue-500 text-slate-300 transition-colors"><Edit2 size={12} /></button>
+                    <button title="Delete" aria-label="Delete" onClick={(e) => { e.stopPropagation(); onDelete(item.id, 'topic'); }} className="p-1 hover:text-red-500 text-slate-300 transition-colors"><Trash2 size={12} /></button>
+                    {item.count && <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-lg text-[10px] font-bold">{item.count}</span>}
+                </div>
+            </div>
+
+            <AnimatePresence>
+                {isExpanded && hasChildren && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="ml-4 border-l-2 border-slate-100 pl-2 space-y-1 overflow-hidden"
+                    >
+                        {item.children.map((child: any) => (
+                            <TreeItem key={child.id} item={child} depth={depth + 1} onDelete={onDelete} />
+                        ))}
+                    </motion.div>
                 )}
             </AnimatePresence>
         </div>
