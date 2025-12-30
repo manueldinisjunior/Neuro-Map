@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { TREE_DATA, CATEGORIES_STATS, type TreeItem } from '../data/knowledge';
+import { useTopics } from '../context/TopicContext';
 
 export function DashboardLayout() {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ export function DashboardLayout() {
 
     // Toggle for sidebar visibility if needed, defaulting to true
     const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const { setIsCreateModalOpen } = useTopics();
 
     const handleLogout = () => {
         localStorage.removeItem('neuro_token');
@@ -145,7 +147,10 @@ export function DashboardLayout() {
                             </nav>
 
                             <div className="p-6 border-t border-slate-50 bg-slate-50/30">
-                                <button className="w-full bg-slate-900 text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-slate-900/10 active:scale-95">
+                                <button
+                                    onClick={() => setIsCreateModalOpen(true)}
+                                    className="w-full bg-slate-900 text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-slate-900/10 active:scale-95"
+                                >
                                     <Plus size={16} />
                                     New Topic
                                 </button>
@@ -188,7 +193,7 @@ export function DashboardLayout() {
                                             <div key={idx}>
                                                 <div className="flex items-center justify-between mb-1.5">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded flex items-center justify-center text-white text-[9px] font-bold shadow-sm category-indicator" data-category={cat.type}>
+                                                        <div className={`w-5 h-5 rounded flex items-center justify-center text-white text-[9px] font-bold shadow-sm ${cat.colorClass}`}>
                                                             {String.fromCharCode(97 + idx).toUpperCase()}
                                                         </div>
                                                         <span className="text-xs font-bold text-slate-600">{cat.label}</span>
@@ -200,8 +205,7 @@ export function DashboardLayout() {
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${(cat.value / 25) * 100}%` }}
                                                         transition={{ duration: 1, delay: idx * 0.1 }}
-                                                        className="h-full rounded-full opacity-80 category-indicator"
-                                                        data-category={cat.type}
+                                                        className={`h-full rounded-full opacity-80 ${cat.colorClass}`}
                                                     />
                                                 </div>
                                             </div>

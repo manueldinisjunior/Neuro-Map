@@ -14,6 +14,7 @@ import './App.css';
 
 import Notes from './pages/Notes';
 import GraphWorkspace from './pages/GraphWorkspace';
+import { GlobalModals } from './components/GlobalModals';
 
 function App() {
   return (
@@ -43,9 +44,10 @@ function App() {
             {/* Catch all redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <GlobalModals />
         </BrowserRouter>
       </TopicProvider>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 }
 
