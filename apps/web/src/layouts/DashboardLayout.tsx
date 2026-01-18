@@ -103,7 +103,7 @@ const TreeNode = React.memo(({ item, depth = 0, isCollapsed }: TreeNodeProps) =>
                     ${marginClass}
                 `}
                 aria-expanded={hasChildren ? (isExpanded ? "true" : "false") : undefined}
-                aria-controls={hasChildren && isExpanded ? `tree-node-${item.id}` : undefined}
+                aria-controls={hasChildren ? `tree-node-${item.id}` : undefined}
             >
                 {hasChildren && (
                     <ChevronDown
@@ -192,8 +192,8 @@ export function DashboardLayout() {
             {/* Sidebar */}
             <motion.aside
                 id="main-sidebar"
-                role="navigation"
-                aria-label="Main sidebar"
+                role="complementary"
+                aria-label="Sidebar navigation"
                 initial={false}
                 animate={{ width: sidebarCollapsed ? 80 : 288 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
@@ -237,6 +237,7 @@ export function DashboardLayout() {
 
                     {/* Collapse Button - Desktop Only */}
                     <button
+                        type="button"
                         onClick={toggleSidebar}
                         className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg
                             text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
@@ -388,6 +389,7 @@ export function DashboardLayout() {
                     <div className="flex items-center gap-4 flex-1">
                         {/* Mobile Menu Button */}
                         <button
+                            type="button"
                             onClick={() => setMobileMenuOpen(true)}
                             className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-slate-700 
                                 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 
