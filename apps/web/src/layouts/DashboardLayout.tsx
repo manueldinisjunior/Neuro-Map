@@ -102,8 +102,8 @@ const TreeNode = React.memo(({ item, depth = 0, isCollapsed }: TreeNodeProps) =>
                     text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all
                     ${marginClass}
                 `}
-                aria-expanded={hasChildren ? (isExpanded ? "true" : "false") : undefined}
-                aria-controls={hasChildren ? `tree-node-${item.id}` : undefined}
+                aria-expanded={hasChildren ? isExpanded : undefined}
+                aria-controls={hasChildren && isExpanded ? `tree-node-${item.id}` : undefined}
             >
                 {hasChildren && (
                     <ChevronDown
@@ -241,7 +241,7 @@ export function DashboardLayout() {
                         onClick={toggleSidebar}
                         className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg
                             text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                        aria-expanded={sidebarCollapsed ? "false" : "true"}
+                        aria-expanded={!sidebarCollapsed}
                         aria-controls="main-sidebar"
                         aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -394,7 +394,7 @@ export function DashboardLayout() {
                             className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-slate-700 
                                 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 
                                 dark:hover:bg-white/10 transition-colors"
-                            aria-expanded={mobileMenuOpen ? "true" : "false"}
+                            aria-expanded={mobileMenuOpen}
                             aria-controls="main-sidebar"
                             aria-label="Open menu"
                         >
