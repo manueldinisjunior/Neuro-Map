@@ -204,8 +204,9 @@ export function NewTopicModal({ isOpen, onClose }: NewTopicModalProps) {
 
                 <div className="space-y-5 flex-1 overflow-y-auto scrollbar-none">
                     <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Category</label>
+                        <label htmlFor="category-select" className="text-xs font-bold text-slate-500 uppercase tracking-widest">Category</label>
                         <select
+                            id="category-select"
                             className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
                             value={selectedCategoryId}
                             onChange={(e) => setSelectedCategoryId(e.target.value)}
