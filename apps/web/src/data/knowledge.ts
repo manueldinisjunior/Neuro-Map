@@ -6,6 +6,7 @@ export interface TreeItem {
     count?: number;
     active?: boolean;
     color?: string; // Added for graph visualization
+    colorClass?: string; // Added for Tailwind styling
     archived?: boolean;
 }
 
@@ -25,6 +26,7 @@ export const TREE_DATA: TreeItem[] = [
         label: 'Education & Learning',
         expanded: true,
         color: '#f43f5e',
+        colorClass: 'bg-rose-500',
         children: [
             {
                 id: '1-1',
@@ -45,6 +47,7 @@ export const TREE_DATA: TreeItem[] = [
         label: 'Professional Skills',
         expanded: true,
         color: '#2dd4bf',
+        colorClass: 'bg-teal-400',
         children: [
             {
                 id: '4-1',

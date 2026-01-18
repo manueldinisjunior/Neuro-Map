@@ -1,10 +1,7 @@
 /* GraphWorkspace component styles */
 
-/* Generic color dot used for indicators */
-.color-dot {
-    border-radius: 9999px;
-    /* fully rounded */
-    flex-shrink: 0;
-    background-color: var(--bg-color, #64748b);
-    /* fallback color */
+/* Generic styles for the graph container can go here */
+.graph-container {
+    width: 100%;
+    height: 100%;
 }

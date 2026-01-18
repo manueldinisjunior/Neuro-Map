@@ -112,8 +112,7 @@ const TreeNode = React.memo(({ item, depth = 0, isCollapsed }: TreeNodeProps) =>
                     />
                 )}
                 <span
-                    className="w-2 h-2 rounded-full flex-shrink-0 dynamic-bg"
-                    style={{ '--bg-color': item.color || '#64748b' } as React.CSSProperties}
+                    className={`w-2 h-2 rounded-full flex-shrink-0 ${item.colorClass || 'bg-slate-500'}`}
                 />
                 <span className="truncate font-medium">{item.label}</span>
                 {item.count && (

@@ -22,6 +22,7 @@ interface GraphNode {
     label: string;
     size: number;
     color: string;
+    colorClass: string;
     val: number;
     x?: number;
     y?: number;
@@ -77,6 +78,7 @@ const buildGraphData = (treeData: TreeItem[]): GraphData => {
         label: 'Neuro Map',
         size: 35,
         color: '#3b82f6',
+        colorClass: 'bg-blue-500',
         val: 35,
         fx: 0,
         fy: 0
@@ -86,11 +88,13 @@ const buildGraphData = (treeData: TreeItem[]): GraphData => {
     const addNode = (item: TreeItem, parentId: string, depth: number = 0) => {
         const baseSize = Math.max(12, 22 - depth * 4);
 
+        const statsEntry = CATEGORIES_STATS[depth % CATEGORIES_STATS.length];
         nodes.push({
             id: item.id,
             label: item.label,
             size: baseSize + (item.count || 0) * 0.5,
-            color: item.color || CATEGORIES_STATS[depth % CATEGORIES_STATS.length]?.color || '#64748b',
+            color: item.color || statsEntry?.color || '#64748b',
+            colorClass: statsEntry?.colorClass || 'bg-slate-500',
             val: baseSize
         });
 
@@ -342,8 +346,7 @@ export default function GraphWorkspace() {
                 >
                     <div className="flex items-center gap-4">
                         <div
-                            className="color-dot w-4 h-4 dynamic-bg"
-                            style={{ '--bg-color': selectedNode.color } as React.CSSProperties}
+                            className={`w-4 h-4 rounded-full flex-shrink-0 ${selectedNode.colorClass}`}
                         />
                         <div className="flex-1 min-w-0">
                             <h3 className="text-white font-bold truncate">{selectedNode.label}</h3>
@@ -375,8 +378,7 @@ export default function GraphWorkspace() {
                         {CATEGORIES_STATS.slice(0, 5).map((cat, i) => (
                             <div key={i} className="flex items-center gap-2">
                                 <div
-                                    className="color-dot w-3 h-3 dynamic-bg"
-                                    style={{ '--bg-color': cat.color } as React.CSSProperties}
+                                    className={`w-3 h-3 rounded-full flex-shrink-0 ${cat.colorClass}`}
                                 />
                                 <span className="text-xs text-slate-300 font-medium truncate max-w-[120px]">
                                     {cat.label}
