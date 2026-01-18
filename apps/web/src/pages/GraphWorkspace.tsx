@@ -342,7 +342,7 @@ export default function GraphWorkspace() {
                 >
                     <div className="flex items-center gap-4">
                         <div
-                            className="color-dot w-4 h-4"
+                            className="color-dot w-4 h-4 dynamic-bg"
                             style={{ '--bg-color': selectedNode.color } as React.CSSProperties}
                         />
                         <div className="flex-1 min-w-0">
@@ -375,7 +375,7 @@ export default function GraphWorkspace() {
                         {CATEGORIES_STATS.slice(0, 5).map((cat, i) => (
                             <div key={i} className="flex items-center gap-2">
                                 <div
-                                    className="color-dot w-3 h-3"
+                                    className="color-dot w-3 h-3 dynamic-bg"
                                     style={{ '--bg-color': cat.color } as React.CSSProperties}
                                 />
                                 <span className="text-xs text-slate-300 font-medium truncate max-w-[120px]">
